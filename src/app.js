@@ -1,4 +1,4 @@
-import { templates, byId } from './templates/index.js';
+import { templates, planned, byId } from './templates/index.js';
 import { writeIFC } from './core/ifc.js';
 import { createViewer } from './viewer.js';
 
@@ -35,6 +35,7 @@ function writeHash() {
 /* ---------- Catálogo ---------- */
 function renderCatalog() {
   const box = $('#catalog'); box.replaceChildren();
+  box.append(el('a', { class: 'tpl back', href: '#' }, '← Catálogo'));
   const groups = [...new Set(templates.map((t) => t.discipline))];
   groups.forEach((g) => {
     box.append(el('h3', {}, g));
@@ -103,6 +104,26 @@ $('#share').onclick = async () => {
 };
 document.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => viewer.view(b.dataset.view)));
 
-function init() { readHash(); renderCatalog(); renderForm(); update(); }
+/* ---------- Inicio: catálogo de familias ---------- */
+function renderHome() {
+  const box = $('#cards'); box.replaceChildren();
+  const disciplines = [...new Set([...templates, ...planned].map((t) => t.discipline))];
+  disciplines.forEach((d) => {
+    const grid = el('div', { class: 'cards' });
+    templates.filter((t) => t.discipline === d).forEach((t) => grid.append(
+      el('a', { class: 'card', href: '#t=' + t.id }, el('b', {}, t.name), el('span', {}, t.description))));
+    planned.filter((t) => t.discipline === d).forEach((t) => grid.append(
+      el('div', { class: 'card soon' }, el('em', {}, 'Próximamente'), el('b', {}, t.name), el('span', {}, t.description))));
+    box.append(el('h2', {}, d), grid);
+  });
+}
+
+function init() {
+  const t = byId(new URLSearchParams(location.hash.slice(1)).get('t'));
+  $('#home').hidden = !!t;
+  $('#studio').hidden = !t;
+  if (!t) { renderHome(); return; }
+  readHash(); renderCatalog(); renderForm(); update();
+}
 addEventListener('hashchange', init);
 init();

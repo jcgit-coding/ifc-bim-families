@@ -9,9 +9,14 @@
 </head>
 <body>
 <header>
-  <strong>Familias BIM</strong><span>Generador paramétrico de IFC4</span>
+  <a href="#" class="brand"><strong>Familias BIM</strong></a><span>Generador paramétrico de IFC4</span>
 </header>
-<div class="layout">
+<main id="home" hidden>
+  <h1>Catálogo de familias</h1>
+  <p class="lead">Elige una plantilla, ajusta sus parámetros, revisa el modelo en 3D y descarga el IFC.</p>
+  <div id="cards"></div>
+</main>
+<div class="layout" id="studio" hidden>
   <nav id="catalog" aria-label="Plantillas"></nav>
   <aside class="panel">
     <div id="form"></div>

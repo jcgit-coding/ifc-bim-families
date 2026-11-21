@@ -1,2 +1,4 @@
 ﻿*.rfa
-pergola-web/
+_archive/
+samples-out/
+node_modules/

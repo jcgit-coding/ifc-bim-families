@@ -1,0 +1,14 @@
+{
+  "name": "bim-families",
+  "version": "0.1.0",
+  "description": "Parametric BIM family generator that exports IFC4, published as a static site.",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node scripts/dev-server.mjs",
+    "test": "node --test \"tests/*.test.js\"",
+    "check": "node scripts/check-conventions.mjs",
+    "samples": "node scripts/export-samples.mjs samples-out"
+  }
+}

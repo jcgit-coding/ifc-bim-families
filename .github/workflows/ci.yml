@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Unit tests
+        run: npm test
+      - name: Project conventions
+        run: npm run check
+      - name: Export sample IFC files
+        run: node scripts/export-samples.mjs samples-out
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate IFC files with IfcOpenShell
+        run: |
+          pip install ifcopenshell numpy
+          python scripts/validate-ifc.py samples-out

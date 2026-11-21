@@ -1,0 +1,41 @@
+# Project standards
+
+These rules are checked automatically by `npm run check` (and in CI).
+
+## Language
+- All code, comments, identifiers, UI text, commit messages and documentation are in **English**.
+
+## File rules
+- At most **1000 lines per file** (aim for far fewer; split by responsibility).
+- File names are **kebab-case** (`parameter-form.js`). Exceptions: `README.md`, `LICENSE.md`.
+- One responsibility per module. Shared logic lives in `src/core`; never copy code between templates.
+
+## Naming
+| Item | Convention | Example |
+| --- | --- | --- |
+| Variables, functions, parameters | `camelCase`, verb for functions | `buildBeams`, `slatCount` |
+| Classes | `PascalCase` | `StepBuilder` |
+| Module-level constants | `UPPER_SNAKE_CASE` | `MAX_LINES` |
+| Template ids | kebab-case | `bioclimatic-pergola` |
+| Parameter keys | `camelCase` English nouns | `columnSection` |
+| Part fields | `name, ifcClass, predefinedType, role, origin, extrusionAxis, profileAxis, profile, length` | |
+| IFC property names | `PascalCase` | `SlatCount` |
+| Custom property sets | `Custom_<Family>_<Topic>` (`Pset_` is reserved by buildingSMART) | `Custom_BioclimaticPergola_Parameters` |
+
+## Units
+- Template parameters are entered in **millimetres** and **degrees**.
+- Everything after `compute()` (parts, IFC, viewer) is in **metres** and **degrees**.
+- Convert with `src/core/units.js`; never inline `/ 1000`.
+
+## Architecture
+- `src/core`: generic engine (IFC writer, parameter handling, registry, URL state). No family-specific code.
+- `src/templates`: one file per family, following the contract in `docs/adding-a-template.md`.
+- `src/viewer`: three.js preview. `src/ui`: DOM rendering. `src/app.js`: wiring only.
+- UI and viewer never import a specific template; they work from the registry.
+
+## Quality gates
+```
+npm test       # unit tests (Node >= 22)
+npm run check  # conventions: line limit, naming, English
+```
+CI also exports sample IFC files and validates them with IfcOpenShell (`scripts/validate-ifc.py`).

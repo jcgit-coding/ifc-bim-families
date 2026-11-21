@@ -1,46 +1,51 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Familias BIM · Generador IFC</title>
+<meta name="description" content="Parametric BIM family generator: choose a template, set its parameters, preview it in 3D and download an IFC4 file.">
+<title>BIM Families · IFC Generator</title>
 <link rel="stylesheet" href="styles.css">
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
 </head>
 <body>
-<header>
-  <a href="#" class="brand"><strong>Familias BIM</strong></a><span>Generador paramétrico de IFC4</span>
+<header class="app-header">
+  <a href="#" class="brand">BIM Families</a>
+  <span class="tagline">Parametric IFC4 generator</span>
 </header>
+
 <main id="home" hidden>
-  <h1>Catálogo de familias</h1>
-  <p class="lead">Elige una plantilla, ajusta sus parámetros, revisa el modelo en 3D y descarga el IFC.</p>
-  <div id="cards"></div>
+  <h1>Family catalogue</h1>
+  <p class="lead">Choose a template, adjust its parameters, review the 3D model and download the IFC.</p>
+  <div id="catalogue"></div>
 </main>
-<div class="layout" id="studio" hidden>
-  <nav id="catalog" aria-label="Plantillas"></nav>
-  <aside class="panel">
-    <div id="form"></div>
-    <div id="err" role="alert"></div>
-    <div id="warn"></div>
+
+<div id="generator" class="generator" hidden>
+  <nav id="sidebar" class="sidebar" aria-label="Templates"></nav>
+  <aside class="panel" aria-label="Parameters">
+    <div id="parameter-form"></div>
   </aside>
-  <section class="stage">
+  <section class="stage" aria-label="3D preview">
     <div id="viewer"></div>
-    <div class="bar">
-      <div class="views">
-        <button data-view="iso" type="button">Isométrica</button>
-        <button data-view="planta" type="button">Planta</button>
-        <button data-view="frontal" type="button">Frontal</button>
-        <button data-view="lateral" type="button">Lateral</button>
+    <div class="toolbar">
+      <div class="button-group" role="group" aria-label="Camera views">
+        <button type="button" data-view="isometric">Isometric</button>
+        <button type="button" data-view="top">Top</button>
+        <button type="button" data-view="front">Front</button>
+        <button type="button" data-view="side">Side</button>
+        <button type="button" id="toggle-dimensions" aria-pressed="true">Dimensions</button>
       </div>
-      <span id="info"></span>
+      <div id="status" class="status" aria-live="polite"></div>
     </div>
-    <div class="actions">
-      <button id="dl" class="primary" type="button">Descargar IFC</button>
-      <button id="json" type="button">Parámetros (JSON)</button>
-      <button id="share" type="button">Copiar enlace</button>
+    <div class="toolbar">
+      <button type="button" id="download-ifc" class="primary">Download IFC</button>
+      <button type="button" id="download-json">Parameters (JSON)</button>
+      <button type="button" id="share-link">Copy link</button>
     </div>
   </section>
 </div>
+
+<noscript>This tool needs JavaScript enabled.</noscript>
 <script type="module" src="src/app.js"></script>
 </body>
 </html>

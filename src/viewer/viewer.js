@@ -5,12 +5,14 @@ import { createDimensions, disposeDimensions } from './dimensions.js';
 import { createPartGeometry, partGeometryKey } from './part-geometry.js';
 
 const ROLE_COLORS = Object.freeze({
-  structure: 0x7d8794,
-  operable: 0x2f7de1,
+  structure: 0x8c9099,
+  operable: 0x1f8f88,
   finish: 0xc9b08a,
-  service: 0x2fa36b,
+  service: 0x6b8f3a,
 });
 const DEFAULT_COLOR = 0xaaaaaa;
+const FRAMING_FACTOR = 2.5; // leaves room around the model for the dimension overlay
+const FRAMING_MARGIN = 1;
 const VIEW_DIRECTIONS = Object.freeze({
   isometric: [1, -1.1, 0.8],
   top: [0, -0.001, 1],
@@ -114,7 +116,7 @@ export function createViewer(container) {
   function setView(name) {
     const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
-    const distance = Math.max(size.x, size.y, size.z) * 1.9 + 1;
+    const distance = Math.max(size.x, size.y, size.z) * FRAMING_FACTOR + FRAMING_MARGIN;
     const offset = new THREE.Vector3(...VIEW_DIRECTIONS[name]).normalize().multiplyScalar(distance);
     camera.position.copy(center).add(offset);
     controls.target.copy(center);

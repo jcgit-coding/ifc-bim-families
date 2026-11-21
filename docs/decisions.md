@@ -39,6 +39,11 @@ Format: decision, reason, alternatives considered.
 ## D9 - Manufacturer file excluded from the repository (Nov 2026)
 - The Gaviota Climatika `.rfa` is third-party material and is ignored by git. Only generic geometry is published.
 
+## D11 - Technical-workbench interface with vendored IBM Plex fonts (Nov 2026)
+- **Why:** the owner found typical generated UIs generic. A three-pane workbench, restrained palette and
+  monospace data give a distinct, professional character. Fonts are vendored (OFL) to avoid external requests.
+- Details in `design.md`.
+
 ## D10 - Viewer dimensions are overall bounding-box measurements (Nov 2026)
 - **Why:** generic for every template. Template-specific dimensions (for example slat pitch) appear in the
   status summary. Per-part measurements are a possible future addition.

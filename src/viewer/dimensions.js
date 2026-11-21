@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { MM_PER_METRE } from '../core/units.js';
 
-const LINE_COLOR = 0xe5484d;
-const LABEL_FONT = 'bold 44px system-ui, sans-serif';
+const LINE_COLOR = 0xc2410c;
+const LABEL_FONT = '600 40px ui-monospace, Consolas, monospace';
 const LABEL_CANVAS = { width: 256, height: 64 };
 const OFFSET_RATIO = 0.12;
 const LABEL_HEIGHT_RATIO = 0.05;
@@ -12,9 +12,12 @@ function createLabel(text, height) {
   canvas.width = LABEL_CANVAS.width;
   canvas.height = LABEL_CANVAS.height;
   const context = canvas.getContext('2d');
-  context.fillStyle = 'rgba(255,255,255,0.92)';
+  context.fillStyle = 'rgba(251,250,248,0.94)';
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = '#b42318';
+  context.strokeStyle = '#c2410c';
+  context.lineWidth = 3;
+  context.strokeRect(1.5, 1.5, canvas.width - 3, canvas.height - 3);
+  context.fillStyle = '#7c2d12';
   context.font = LABEL_FONT;
   context.textAlign = 'center';
   context.textBaseline = 'middle';

@@ -1,24 +1,28 @@
 import { registry } from './templates/index.js';
 import { buildIfc } from './core/ifc/writer.js';
 import { evaluateTemplate, toIfcModel } from './core/templates/evaluate.js';
+import { defaultValues } from './core/templates/params.js';
 import { decodeState, encodeState } from './core/url-state.js';
 import { createViewer } from './viewer/viewer.js';
 import { downloadTextFile, query } from './ui/dom.js';
+import { renderBreadcrumbs } from './ui/breadcrumbs.js';
 import { renderHome } from './ui/home.js';
 import { renderParameterForm } from './ui/parameter-form.js';
-import { renderSidebar } from './ui/sidebar.js';
 import { renderStatus } from './ui/status-panel.js';
 
 const SHARE_LABEL_MS = 1800;
 
 const elements = {
   home: query('#home'),
+  filters: query('#filters'),
   catalogue: query('#catalogue'),
+  crumbs: query('#crumbs'),
   generator: query('#generator'),
-  sidebar: query('#sidebar'),
   form: query('#parameter-form'),
   status: query('#status'),
   viewer: query('#viewer'),
+  fileName: query('#file-name'),
+  resetParams: query('#reset-params'),
   downloadIfc: query('#download-ifc'),
   downloadJson: query('#download-json'),
   share: query('#share-link'),
@@ -31,6 +35,7 @@ const state = { template: undefined, values: {}, result: undefined };
 function refresh() {
   state.result = evaluateTemplate(state.template, state.values);
   renderStatus(elements.status, state.result);
+  elements.fileName.textContent = state.result.fileName;
   elements.downloadIfc.disabled = state.result.errors.length > 0;
   if (state.result.errors.length === 0) viewer.setParts(state.result.parts);
   history.replaceState(null, '', `#${encodeState(state.template, state.values)}`);
@@ -41,7 +46,7 @@ function showGenerator(template, values) {
   state.values = values;
   elements.home.hidden = true;
   elements.generator.hidden = false;
-  renderSidebar(elements.sidebar, registry, template);
+  renderBreadcrumbs(elements.crumbs, registry, template);
   renderParameterForm(elements.form, template, values, (key, value) => {
     state.values = { ...state.values, [key]: value };
     refresh();
@@ -52,7 +57,8 @@ function showGenerator(template, values) {
 function showCatalogue() {
   elements.generator.hidden = true;
   elements.home.hidden = false;
-  renderHome(elements.catalogue, registry);
+  renderBreadcrumbs(elements.crumbs, registry, undefined);
+  renderHome(elements.filters, elements.catalogue, registry);
 }
 
 function route() {
@@ -60,6 +66,9 @@ function route() {
   if (template) showGenerator(template, values);
   else showCatalogue();
 }
+
+elements.resetParams.addEventListener('click', () =>
+  showGenerator(state.template, defaultValues(state.template)));
 
 elements.downloadIfc.addEventListener('click', () => {
   const name = state.values.name || state.template.name;
@@ -75,7 +84,7 @@ elements.downloadJson.addEventListener('click', () => {
 elements.share.addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(location.href);
-    elements.share.textContent = 'Link copied ✓';
+    elements.share.textContent = 'Link copied';
   } catch {
     window.prompt('Copy this link:', location.href);
   }

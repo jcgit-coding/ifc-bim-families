@@ -9,40 +9,61 @@
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
 </head>
 <body>
-<header class="app-header">
-  <a href="#" class="brand">BIM Families</a>
-  <span class="tagline">Parametric IFC4 generator</span>
+<header class="appbar">
+  <a href="#" class="brand" aria-label="BIM Families, catalogue">
+    <svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M2 6h16M2 10h16M2 14h16M4 3v14M16 3v14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    BIM Families
+  </a>
+  <nav id="crumbs" class="crumbs" aria-label="Breadcrumb"></nav>
+  <span class="appbar-meta">IFC4 · mm · deg</span>
 </header>
 
-<main id="home" hidden>
-  <h1>Family catalogue</h1>
-  <p class="lead">Choose a template, adjust its parameters, review the 3D model and download the IFC.</p>
-  <div id="catalogue"></div>
+<main id="home" class="home" hidden>
+  <div class="home-inner">
+    <h1>Family catalogue</h1>
+    <p class="lead">Pick a template, set its parameters, check the 3D model and export an IFC4 file.</p>
+    <div id="filters" class="filters" role="group" aria-label="Filter by discipline"></div>
+    <div id="catalogue"></div>
+  </div>
 </main>
 
-<div id="generator" class="generator" hidden>
-  <nav id="sidebar" class="sidebar" aria-label="Templates"></nav>
-  <aside class="panel" aria-label="Parameters">
-    <div id="parameter-form"></div>
+<div id="generator" class="workbench" hidden>
+  <aside class="pane params" aria-label="Parameters">
+    <div class="pane-head">
+      <h2>Parameters</h2>
+      <button type="button" id="reset-params" class="ghost">Reset</button>
+    </div>
+    <div id="parameter-form" class="pane-body"></div>
   </aside>
-  <section class="stage" aria-label="3D preview">
+
+  <section class="viewport" aria-label="3D preview">
     <div id="viewer"></div>
-    <div class="toolbar">
-      <div class="button-group" role="group" aria-label="Camera views">
-        <button type="button" data-view="isometric">Isometric</button>
-        <button type="button" data-view="top">Top</button>
-        <button type="button" data-view="front">Front</button>
-        <button type="button" data-view="side">Side</button>
-        <button type="button" id="toggle-dimensions" aria-pressed="true">Dimensions</button>
-      </div>
-      <div id="status" class="status" aria-live="polite"></div>
+    <div class="overlay top-left segmented" role="group" aria-label="Camera views">
+      <button type="button" data-view="isometric">Iso</button>
+      <button type="button" data-view="top">Top</button>
+      <button type="button" data-view="front">Front</button>
+      <button type="button" data-view="side">Side</button>
     </div>
-    <div class="toolbar">
-      <button type="button" id="download-ifc" class="primary">Download IFC</button>
-      <button type="button" id="download-json">Parameters (JSON)</button>
-      <button type="button" id="share-link">Copy link</button>
+    <div class="overlay top-right segmented">
+      <button type="button" id="toggle-dimensions" aria-pressed="true">Dimensions</button>
     </div>
+    <p class="overlay bottom-left hint">Drag to orbit · Scroll to zoom · Right-drag to pan</p>
   </section>
+
+  <aside class="pane inspector" aria-label="Model">
+    <div class="pane-head"><h2>Model</h2></div>
+    <div id="status" class="pane-body" aria-live="polite"></div>
+    <div class="pane-foot">
+      <button type="button" id="download-ifc" class="primary">Export IFC</button>
+      <p id="file-name" class="file-name"></p>
+      <div class="foot-row">
+        <button type="button" id="share-link">Copy link</button>
+        <button type="button" id="download-json">Parameters</button>
+      </div>
+    </div>
+  </aside>
 </div>
 
 <noscript>This tool needs JavaScript enabled.</noscript>

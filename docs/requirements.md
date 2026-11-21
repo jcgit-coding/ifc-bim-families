@@ -17,6 +17,7 @@ Status: Done / Partial / Pending.
 | --- | --- | --- |
 | U1 | Professional, organised interface with a catalogue of families. | Done (first version) |
 | U2 | **3D viewer** (three.js) to inspect the model. | Done |
+| U4 | **Professional UI/UX and CSS** that does not look like a generic AI-generated design. | Done (first pass, see `design.md`; dark theme unchecked) |
 | U3 | The viewer shows **measurements** so the user can verify the model. | Done (overall width, depth, height) |
 
 ## Code quality

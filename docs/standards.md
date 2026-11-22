@@ -41,6 +41,17 @@ These rules are checked automatically by `npm run check` (and in CI).
 - `src/viewer`: three.js preview. `src/ui`: DOM rendering. `src/app.js`: wiring only.
 - UI and viewer never import a specific template; they work from the registry.
 
+## Definition of done
+A change is finished only when all of these are true:
+1. `npm test` and `npm run check` pass.
+2. The affected documents in `docs/` describe the new behaviour. Review, in this order:
+   `requirements.md` (status of the related requirement), `plan.md` (structure and phases),
+   `design.md` (interface changes), `decisions.md` (new decision and its reason),
+   `adding-a-template.md` (engine or contract changes), `roadmap.md` (done and next).
+3. Search `docs/` and `README.md` for names that the change removed or renamed (for example old
+   parameter keys or module names) and update them.
+4. The commit message explains what changed and why.
+
 ## Quality gates
 ```
 npm test       # unit tests (Node >= 22)

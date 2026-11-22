@@ -31,6 +31,9 @@ The viewer uses neutral grey for structure and teal for operable parts; dimensio
 - Keyboard focus is always visible; interactive controls have accessible names.
 - Below 960 px the layout stacks (viewport first).
 
+- Angles use the same numeric field as dimensions (right-aligned monospace value with a `deg` suffix and
+  min/max validation), so every quantity is entered the same way. Sliders (`type: 'range'`) remain
+  available in the engine but templates should prefer numeric fields.
 - Parameters with `visibleWhen` appear only when relevant (for example the column diameter when the
   section shape is circular).
 

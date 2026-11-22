@@ -31,7 +31,7 @@ const params = [
   { key: 'slatWidth', label: 'Slat width', type: 'number', unit: 'mm', group: 'Slats', default: 200, min: 50, max: 500, step: 5 },
   { key: 'slatThickness', label: 'Slat thickness', type: 'number', unit: 'mm', group: 'Slats', default: 30, min: 5, max: 100, step: 1 },
   { key: 'slatGap', label: 'Minimum gap', type: 'number', unit: 'mm', group: 'Slats', default: 20, min: 0, max: 200, step: 1 },
-  { key: 'slatAngle', label: 'Opening angle', type: 'range', unit: 'deg', group: 'Slats', default: 0, min: 0, max: SLAT_ANGLE_MAX, step: 1 },
+  { key: 'slatAngle', label: 'Opening angle', type: 'number', unit: 'deg', group: 'Slats', default: 0, min: 0, max: SLAT_ANGLE_MAX, step: 1 },
 ];
 
 function validateGeometry(v) {

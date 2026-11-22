@@ -10,6 +10,7 @@ import { renderHome } from './ui/home.js';
 import { renderParameterForm } from './ui/parameter-form.js';
 import { renderStatus } from './ui/status-panel.js';
 import { initTheme } from './ui/theme.js';
+import { renderBuildInfo } from './ui/build-info.js';
 
 const SHARE_LABEL_MS = 1800;
 
@@ -102,5 +103,6 @@ elements.toggleDimensions.addEventListener('click', () => {
 });
 
 initTheme(query('#toggle-theme'));
+renderBuildInfo(query('#build-info'));
 window.addEventListener('hashchange', route);
 route();

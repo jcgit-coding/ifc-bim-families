@@ -44,6 +44,8 @@ button, input, select { font: inherit; color: inherit; }
 .crumbs select { height: 26px; padding: 0 22px 0 8px; font-weight: 500; background: transparent; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; }
 .crumbs select:hover { border-color: var(--line-strong); background: var(--hover); }
 .appbar-meta { margin-left: auto; color: var(--ink-3); font: 11px var(--font-mono); }
+.appbar-version { margin-left: 12px; text-decoration: none; }
+.appbar-version:hover { color: var(--accent); }
 
 /* Catalogue */
 .home { flex: 1; overflow: auto; }

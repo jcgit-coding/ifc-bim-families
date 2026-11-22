@@ -37,6 +37,10 @@ The viewer uses neutral grey for structure and teal for operable parts; dimensio
 - Parameters with `visibleWhen` appear only when relevant (for example the column diameter when the
   section shape is circular).
 
+- The app bar shows the latest commit on `main` (short SHA, local date and time, link to the commit), read
+  from the GitHub API by `src/ui/build-info.js`, so a push can be verified on the published page. It shows
+  the repository head, not the deployed build: Pages may lag by a minute or two. Falls back to "version unavailable".
+
 ## Open items
 - Dark theme switches correctly (verified through computed styles) but has not been reviewed visually.
 - Per-part measurements and part selection in the viewer.

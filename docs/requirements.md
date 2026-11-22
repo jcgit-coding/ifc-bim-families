@@ -28,6 +28,9 @@ Status: Done / Partial / Pending.
 | Q3 | **Logical coherence** and **no redundancy**: shared logic lives in `src/core`. | Reviewed by structure; see `standards.md` |
 | Q4 | **Standardised names** for files, variables and constants. | Documented in `standards.md`, file names enforced |
 | Q5 | **Professional back end**: a clean engine layer separated from the UI. | Done (`src/core`; the app has no server) |
+| Q7 | **No emoji** anywhere in the project. | Enforced by `npm run check` |
+| Q8 | **Light mode by default.** | Done (dark is an opt-in toggle) |
+| Q9 | Cross sections of columns and beams must be **parametrised** (shape and dimensions). | Done for the pergola (rectangular or circular columns, beam width and height) |
 | Q6 | Documentation kept in `docs/`, including plans and audit material. | Done |
 
 ## Constraints discovered

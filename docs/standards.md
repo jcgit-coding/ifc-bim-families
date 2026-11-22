@@ -5,6 +5,14 @@ These rules are checked automatically by `npm run check` (and in CI).
 ## Language
 - All code, comments, identifiers, UI text, commit messages and documentation are in **English**.
 
+## Prohibited
+- **Emoji, pictographs and dingbats** are forbidden everywhere: code, UI text, comments, documentation
+  and commit messages. Use plain text or SVG icons instead. Checked by `npm run check`.
+
+## Interface defaults
+- The **light theme is the default**. The dark theme is an explicit user choice (toggle in the app bar)
+  and is never selected from the operating-system preference.
+
 ## File rules
 - At most **1000 lines per file** (aim for far fewer; split by responsibility).
 - File names are **kebab-case** (`parameter-form.js`). Exceptions: `README.md`, `LICENSE.md`.

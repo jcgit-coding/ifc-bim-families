@@ -9,6 +9,7 @@ import { renderBreadcrumbs } from './ui/breadcrumbs.js';
 import { renderHome } from './ui/home.js';
 import { renderParameterForm } from './ui/parameter-form.js';
 import { renderStatus } from './ui/status-panel.js';
+import { initTheme } from './ui/theme.js';
 
 const SHARE_LABEL_MS = 1800;
 
@@ -100,5 +101,6 @@ elements.toggleDimensions.addEventListener('click', () => {
   viewer.setDimensionsVisible(visible);
 });
 
+initTheme(query('#toggle-theme'));
 window.addEventListener('hashchange', route);
 route();

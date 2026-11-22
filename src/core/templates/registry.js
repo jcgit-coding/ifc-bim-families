@@ -37,6 +37,11 @@ export function assertTemplate(template) {
       throw new Error(`${where}: select "${param.key}" needs options`);
     }
   }
+  for (const param of template.params.filter((entry) => entry.visibleWhen)) {
+    if (!keys.has(param.visibleWhen.key)) {
+      throw new Error(`${where}: "${param.key}" depends on unknown parameter "${param.visibleWhen.key}"`);
+    }
+  }
 }
 
 /**

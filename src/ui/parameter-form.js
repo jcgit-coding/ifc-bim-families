@@ -1,4 +1,4 @@
-import { coerceValue } from '../core/templates/params.js';
+import { coerceValue, isVisible } from '../core/templates/params.js';
 import { el } from './dom.js';
 
 const INPUT_TYPES = { range: 'range', number: 'number', text: 'text', boolean: 'checkbox' };
@@ -16,7 +16,7 @@ function createInput(param, value) {
 const readControl = (param, control) =>
   coerceValue(param, param.type === 'boolean' ? control.checked : control.value);
 
-/** Builds the control cell of a field: [control element, wrapper element]. */
+/** Builds the control cell of a field: { control, cell }. */
 function createField(param, value) {
   if (param.type === 'select') {
     const select = el('select', {}, param.options.map(([optionValue, label]) => el('option', { value: optionValue }, label)));
@@ -36,19 +36,30 @@ function createField(param, value) {
 
 /**
  * Renders a form from a template's parameter definitions, one collapsible section per group.
+ * Fields with `visibleWhen` are shown or hidden as their controlling value changes.
  * @param {(key: string, value: unknown) => void} onChange called on every edit
  */
 export function renderParameterForm(container, template, values, onChange) {
   container.replaceChildren();
+  const current = { ...values };
+  const fields = [];
+  const applyVisibility = () => fields.forEach(({ param, label }) => { label.hidden = !isVisible(param, current); });
+
   const groups = [...new Set(template.params.map((param) => param.group))];
   for (const group of groups) {
     const body = el('div', { class: 'group-body' });
     for (const param of template.params.filter((entry) => entry.group === group)) {
       const { control, cell } = createField(param, values[param.key]);
-      control.addEventListener('input', () => onChange(param.key, readControl(param, control)));
-      const fieldClass = param.type === 'range' ? 'field stacked' : 'field';
-      body.append(el('label', { class: fieldClass }, el('span', {}, param.label), cell));
+      const label = el('label', { class: param.type === 'range' ? 'field stacked' : 'field' }, el('span', {}, param.label), cell);
+      control.addEventListener('input', () => {
+        current[param.key] = readControl(param, control);
+        applyVisibility();
+        onChange(param.key, current[param.key]);
+      });
+      fields.push({ param, label });
+      body.append(label);
     }
     container.append(el('details', { class: 'group', open: '' }, el('summary', {}, group), body));
   }
+  applyVisibility();
 }

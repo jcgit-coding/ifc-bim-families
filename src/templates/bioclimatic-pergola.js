@@ -16,11 +16,18 @@ const params = [
   { key: 'width', label: 'Width (slat length)', type: 'number', unit: 'mm', group: 'Dimensions', default: 4000, min: 1000, max: 12000, step: 50 },
   { key: 'depth', label: 'Depth', type: 'number', unit: 'mm', group: 'Dimensions', default: 3000, min: 1000, max: 12000, step: 50 },
   { key: 'height', label: 'Total height', type: 'number', unit: 'mm', group: 'Dimensions', default: 2600, min: 2000, max: 5000, step: 50 },
-  { key: 'columnCount', label: 'Columns', type: 'select', group: 'Structure', default: '4',
+  { key: 'columnCount', label: 'Count', type: 'select', group: 'Columns', default: '4',
     options: [['4', '4 (corners)'], ['2', '2 (front only)']] },
-  { key: 'columnSection', label: 'Column section', type: 'number', unit: 'mm', group: 'Structure', default: 150, min: 50, max: 400, step: 5 },
-  { key: 'beamWidth', label: 'Beam width', type: 'number', unit: 'mm', group: 'Structure', default: 150, min: 50, max: 400, step: 5 },
-  { key: 'beamHeight', label: 'Beam height', type: 'number', unit: 'mm', group: 'Structure', default: 200, min: 50, max: 500, step: 5 },
+  { key: 'columnShape', label: 'Section shape', type: 'select', group: 'Columns', default: 'rectangular',
+    options: [['rectangular', 'Rectangular'], ['circular', 'Circular']] },
+  { key: 'columnWidth', label: 'Section width (X)', type: 'number', unit: 'mm', group: 'Columns', default: 150, min: 50, max: 500, step: 5,
+    visibleWhen: { key: 'columnShape', value: 'rectangular' } },
+  { key: 'columnDepth', label: 'Section depth (Y)', type: 'number', unit: 'mm', group: 'Columns', default: 150, min: 50, max: 500, step: 5,
+    visibleWhen: { key: 'columnShape', value: 'rectangular' } },
+  { key: 'columnDiameter', label: 'Diameter', type: 'number', unit: 'mm', group: 'Columns', default: 150, min: 50, max: 500, step: 5,
+    visibleWhen: { key: 'columnShape', value: 'circular' } },
+  { key: 'beamWidth', label: 'Section width', type: 'number', unit: 'mm', group: 'Beams', default: 150, min: 50, max: 400, step: 5 },
+  { key: 'beamHeight', label: 'Section height', type: 'number', unit: 'mm', group: 'Beams', default: 200, min: 50, max: 500, step: 5 },
   { key: 'slatWidth', label: 'Slat width', type: 'number', unit: 'mm', group: 'Slats', default: 200, min: 50, max: 500, step: 5 },
   { key: 'slatThickness', label: 'Slat thickness', type: 'number', unit: 'mm', group: 'Slats', default: 30, min: 5, max: 100, step: 1 },
   { key: 'slatGap', label: 'Minimum gap', type: 'number', unit: 'mm', group: 'Slats', default: 20, min: 0, max: 200, step: 1 },
@@ -35,16 +42,27 @@ function validateGeometry(v) {
   return errors;
 }
 
-function buildColumns(d, columnCount) {
-  const rows = columnCount === 4 ? [d.columnSection / 2, d.depth - d.columnSection / 2] : [d.columnSection / 2];
+/** Column section: profile for the IFC/viewer plus the footprint used to place it. */
+function columnSection(d, shape) {
+  if (shape === 'circular') {
+    return { profile: { type: 'circle', radius: d.columnDiameter / 2 }, footprintX: d.columnDiameter, footprintY: d.columnDiameter };
+  }
+  return {
+    profile: { type: 'rectangle', width: d.columnWidth, depth: d.columnDepth },
+    footprintX: d.columnWidth, footprintY: d.columnDepth,
+  };
+}
+
+function buildColumns(d, columnCount, section) {
+  const { profile, footprintX, footprintY } = section;
+  const rows = columnCount === 4 ? [footprintY / 2, d.depth - footprintY / 2] : [footprintY / 2];
   const columns = [];
   for (const y of rows) {
-    for (const x of [d.columnSection / 2, d.width - d.columnSection / 2]) {
+    for (const x of [footprintX / 2, d.width - footprintX / 2]) {
       columns.push({
         name: `Column ${columns.length + 1}`, ifcClass: 'IfcColumn', predefinedType: 'COLUMN', role: 'structure',
         origin: [x, y, 0], extrusionAxis: [0, 0, 1], profileAxis: [1, 0, 0],
-        profile: { type: 'rectangle', width: d.columnSection, depth: d.columnSection },
-        length: d.height - d.beamHeight,
+        profile, length: d.height - d.beamHeight,
       });
     }
   }
@@ -95,17 +113,18 @@ function compute(values) {
     [key, typeof value === 'number' && key !== 'slatAngle' ? mmToMetres(value) : value]));
   const { slats, count, pitch, overlaps } = buildSlats(d, values.slatAngle);
   const planArea = d.width * d.depth;
+  const section = columnSection(d, values.columnShape);
 
   return {
     errors,
     warnings: overlaps ? ['At this angle the slats overlap in plan view.'] : [],
     objectType: 'Bioclimatic pergola',
     fileName: `bioclimatic-pergola_${values.width}x${values.depth}_${values.slatAngle}deg.ifc`,
-    parts: [...buildColumns(d, columnCount), ...buildBeams(d), ...slats],
+    parts: [...buildColumns(d, columnCount, section), ...buildBeams(d), ...slats],
     summary: [
       { label: 'Slats', value: String(count) },
       { label: 'Slat pitch', value: `${(pitch * 1000).toFixed(0)} mm` },
-      { label: 'Columns', value: String(columnCount) },
+      { label: 'Columns', value: `${columnCount} (${values.columnShape})` },
       { label: 'Plan area', value: `${planArea.toFixed(2)} m²` },
     ],
     propertySets: [{
@@ -114,7 +133,9 @@ function compute(values) {
         { name: 'Width', value: Measure.length(d.width) },
         { name: 'Depth', value: Measure.length(d.depth) },
         { name: 'TotalHeight', value: Measure.length(d.height) },
-        { name: 'ColumnSection', value: Measure.length(d.columnSection) },
+        { name: 'ColumnShape', value: Measure.label(values.columnShape) },
+        { name: 'ColumnWidth', value: Measure.length(section.footprintX) },
+        { name: 'ColumnDepth', value: Measure.length(section.footprintY) },
         { name: 'BeamWidth', value: Measure.length(d.beamWidth) },
         { name: 'BeamHeight', value: Measure.length(d.beamHeight) },
         { name: 'SlatWidth', value: Measure.length(d.slatWidth) },

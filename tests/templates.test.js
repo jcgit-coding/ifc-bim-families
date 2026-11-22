@@ -31,6 +31,29 @@ test('out-of-range values are reported without calling compute()', () => {
   assert.deepEqual(result.parts, []);
 });
 
+test('column and beam sections are parametrised', () => {
+  const [template] = registry.templates;
+  const base = defaultValues(template);
+  const rectangular = evaluateTemplate(template, { ...base, columnWidth: 200, columnDepth: 300 });
+  const column = rectangular.parts.find((part) => part.ifcClass === 'IfcColumn');
+  assert.deepEqual(column.profile, { type: 'rectangle', width: 0.2, depth: 0.3 });
+
+  const circular = evaluateTemplate(template, { ...base, columnShape: 'circular', columnDiameter: 250 });
+  assert.deepEqual(circular.parts.find((part) => part.ifcClass === 'IfcColumn').profile, { type: 'circle', radius: 0.125 });
+
+  const beams = evaluateTemplate(template, { ...base, beamWidth: 100, beamHeight: 250 })
+    .parts.filter((part) => part.ifcClass === 'IfcBeam');
+  assert.ok(beams.every((beam) => beam.profile.width === 0.1 && beam.profile.depth === 0.25));
+});
+
+test('hidden parameters are not validated and bad dependencies are rejected', () => {
+  const [template] = registry.templates;
+  const hiddenOutOfRange = { ...defaultValues(template), columnDiameter: 1 };
+  assert.deepEqual(validateParams(template, hiddenOutOfRange), []);
+  const broken = { ...template, params: [...template.params, { key: 'x', label: 'X', type: 'text', group: 'G', default: '', visibleWhen: { key: 'missing', value: 1 } }] };
+  assert.throws(() => assertTemplate(broken), /unknown parameter/);
+});
+
 test('registry rejects duplicate ids and malformed templates', () => {
   const [template] = registry.templates;
   assert.throws(() => createRegistry([template, template]), /Duplicate template id/);

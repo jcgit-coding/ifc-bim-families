@@ -52,6 +52,10 @@ The test suite automatically checks the contract, the default values and that a 
 
 ## Reference
 - **Parameter types:** `text`, `number`, `range`, `select` (with `options: [[value, label], ...]`), `boolean`.
+- **Conditional parameters:** `visibleWhen: { key: 'shape', value: 'circular' }` shows a parameter only
+  while another parameter has that value. Hidden parameters are not range-validated.
+- **Cross sections:** parametrise sections (shape and dimensions) instead of hard-coding them, as the
+  pergola does for columns (rectangular width/depth or circular diameter) and beams.
 - **Profiles:** `rectangle { width, depth }` and `circle { radius }`. New shapes: add a writer in
   `src/core/ifc/profiles.js` and a geometry factory in `src/viewer/part-geometry.js`.
 - **IFC classes:** see `SUPPORTED_ELEMENT_CLASSES` in `src/core/ifc/writer.js`.

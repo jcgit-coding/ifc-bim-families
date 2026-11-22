@@ -19,7 +19,8 @@ template. Requested by the project owner; decisions below keep it consistent as 
 
 ## Colour tokens
 Defined once in `:root` in `styles.css` (`--paper`, `--panel`, `--ink`, `--line`, `--accent`, ...), with a
-`prefers-color-scheme: dark` override. Components only use tokens, never literal colours.
+`:root[data-theme="dark"]` override. The light theme is the default; the app-bar toggle switches theme and
+remembers the choice in local storage (`src/ui/theme.js`). Components only use tokens, never literal colours.
 The viewer uses neutral grey for structure and teal for operable parts; dimension annotations use amber.
 
 ## Behaviour
@@ -30,6 +31,9 @@ The viewer uses neutral grey for structure and teal for operable parts; dimensio
 - Keyboard focus is always visible; interactive controls have accessible names.
 - Below 960 px the layout stacks (viewport first).
 
+- Parameters with `visibleWhen` appear only when relevant (for example the column diameter when the
+  section shape is circular).
+
 ## Open items
-- Dark theme has been written but not yet checked visually in a browser.
+- Dark theme switches correctly (verified through computed styles) but has not been reviewed visually.
 - Per-part measurements and part selection in the viewer.

@@ -3,6 +3,7 @@
  *  - source files have at most MAX_LINES lines
  *  - file names are kebab-case
  *  - code and docs are written in English (no Spanish-only characters)
+ *  - no emoji or pictographs anywhere
  * Usage: node scripts/check-conventions.mjs
  */
 import { readdirSync, readFileSync } from 'node:fs';
@@ -22,6 +23,13 @@ const SPANISH_CODE_POINTS = [
   0xe1, 0xe9, 0xed, 0xf3, 0xfa, 0xf1, 0xfc, 0xc1, 0xc9, 0xcd, 0xd3, 0xda, 0xd1, 0xdc, 0xbf, 0xa1,
 ];
 const SPANISH_CHARACTERS = new RegExp(`[${String.fromCodePoint(...SPANISH_CODE_POINTS)}]`);
+
+// Emoji, pictographs, dingbats and emoji modifiers are forbidden everywhere (code, UI text, docs).
+const EMOJI_RANGES = [[0x1f000, 0x1faff], [0x2600, 0x27bf], [0x2b00, 0x2bff], [0x200d, 0x200d], [0xfe0f, 0xfe0f]];
+const containsEmoji = (line) => [...line].some((character) => {
+  const codePoint = character.codePointAt(0);
+  return EMOJI_RANGES.some(([low, high]) => codePoint >= low && codePoint <= high);
+});
 
 function* walk(directory) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
@@ -48,6 +56,7 @@ export function collectViolations(root = ROOT) {
     if (lines.length > MAX_LINES) violations.push(`${name}: ${lines.length} lines (max ${MAX_LINES})`);
     lines.forEach((line, index) => {
       if (SPANISH_CHARACTERS.test(line)) violations.push(`${name}:${index + 1}: non-English text`);
+      if (containsEmoji(line)) violations.push(`${name}:${index + 1}: emoji are not allowed`);
     });
   }
   return violations;

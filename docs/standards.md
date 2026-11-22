@@ -25,7 +25,7 @@ These rules are checked automatically by `npm run check` (and in CI).
 | Classes | `PascalCase` | `StepBuilder` |
 | Module-level constants | `UPPER_SNAKE_CASE` | `MAX_LINES` |
 | Template ids | kebab-case | `bioclimatic-pergola` |
-| Parameter keys | `camelCase` English nouns | `columnSection` |
+| Parameter keys | `camelCase` English nouns | `columnWidth` |
 | Part fields | `name, ifcClass, predefinedType, role, origin, extrusionAxis, profileAxis, profile, length` | |
 | IFC property names | `PascalCase` | `SlatCount` |
 | Custom property sets | `Custom_<Family>_<Topic>` (`Pset_` is reserved by buildingSMART) | `Custom_BioclimaticPergola_Parameters` |

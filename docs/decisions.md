@@ -39,11 +39,20 @@ Format: decision, reason, alternatives considered.
 ## D9 - Manufacturer file excluded from the repository (Nov 2026)
 - The Gaviota Climatika `.rfa` is third-party material and is ignored by git. Only generic geometry is published.
 
+## D10 - Viewer dimensions are overall bounding-box measurements (Nov 2026)
+- **Why:** generic for every template. Template-specific dimensions (for example slat pitch) appear in the
+  status summary. Per-part measurements are a possible future addition.
+
 ## D11 - Technical-workbench interface with vendored IBM Plex fonts (Nov 2026)
 - **Why:** the owner found typical generated UIs generic. A three-pane workbench, restrained palette and
   monospace data give a distinct, professional character. Fonts are vendored (OFL) to avoid external requests.
 - Details in `design.md`.
 
-## D10 - Viewer dimensions are overall bounding-box measurements (Nov 2026)
-- **Why:** generic for every template. Template-specific dimensions (for example slat pitch) appear in the
-  status summary. Per-part measurements are a possible future addition.
+## D12 - Light theme by default, no emoji (Nov 2026)
+- **Why:** owner rules. The theme never follows the operating-system preference; dark is an opt-in
+  toggle stored in local storage. Emoji are banned everywhere and rejected by `npm run check`.
+
+## D13 - Parametrised cross sections and conditional parameters (Nov 2026)
+- **Why:** the first pergola version hard-coded square columns. Sections are now parameters (shape and
+  dimensions). A generic `visibleWhen` rule in the engine hides parameters that do not apply, so any
+  family can offer alternative sections without custom UI code.

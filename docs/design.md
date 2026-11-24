@@ -41,6 +41,9 @@ The viewer uses neutral grey for structure and teal for operable parts; dimensio
   from the GitHub API by `src/ui/build-info.js`, so a push can be verified on the published page. It shows
   the repository head, not the deployed build: Pages may lag by a minute or two. Falls back to "version unavailable".
 
+- The app-bar button (EN/ES) switches the language and shows the language it will switch to. The page,
+  form, messages and summary are re-rendered; the URL and parameter values are kept.
+
 ## Open items
 - Dark theme switches correctly (verified through computed styles) but has not been reviewed visually.
 - Per-part measurements and part selection in the viewer.

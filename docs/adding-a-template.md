@@ -50,6 +50,13 @@ npm test && npm run check
 ```
 The test suite automatically checks the contract, the default values and that a valid IFC is produced.
 
+## 3b. Translate it
+Write every user-visible string in English (parameter labels, groups, option labels, name, description,
+discipline, summary labels, errors and warnings). Wrap strings built inside `compute()` with `t()` from
+`src/i18n/i18n.js`, using `{name}` placeholders for values. Then add the Spanish text to
+`src/i18n/es.js`. The tests fail when a declared template string has no Spanish entry. Parts, IFC
+property names and file names are never translated.
+
 ## Reference
 - **Parameter types:** `text`, `number`, `range`, `select` (with `options: [[value, label], ...]`), `boolean`.
 - **Conditional parameters:** `visibleWhen: { key: 'shape', value: 'circular' }` shows a parameter only

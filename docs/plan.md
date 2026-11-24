@@ -13,6 +13,7 @@ src/
     geometry/      vector helpers for part orientation
     templates/     parameter handling, template contract/registry, evaluation
     units.js       millimetre/metre/degree conversions
+  i18n/            translation layer (t(), language switch) and the Spanish dictionary
     url-state.js   shareable URL state
   templates/       one file per family + catalogue index + "coming soon" list
   viewer/          three.js preview, part geometry, dimensions overlay
@@ -33,10 +34,11 @@ viewer / buildIfc`. The UI and the viewer never import a specific template.
    by default with a dark toggle (see `design.md`).
 3c. **Section parametrisation (done):** rectangular or circular columns and beam sections, conditional
    parameters (`visibleWhen`), emoji ban enforced by the checker.
+3d. **Languages (done):** English and Spanish interface (see decision D14).
 4. **Second family (next):** structural (profile sections) or plumbing (pipes with elbows) to prove the
    engine is generic; likely needs new profile types and curved sweeps.
 5. **Hardening:** instanced rendering for large models, richer measurements per template,
-   optional UI translations, Revit import mapping notes.
+   Revit import mapping notes.
 
 ## Quality gates
 - `npm test`: engine, contract of every template, IFC output.

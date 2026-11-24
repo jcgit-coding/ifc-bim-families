@@ -1,4 +1,5 @@
 import { coerceValue, isVisible } from '../core/templates/params.js';
+import { t } from '../i18n/i18n.js';
 import { el } from './dom.js';
 
 const INPUT_TYPES = { range: 'range', number: 'number', text: 'text', boolean: 'checkbox' };
@@ -19,7 +20,7 @@ const readControl = (param, control) =>
 /** Builds the control cell of a field: { control, cell }. */
 function createField(param, value) {
   if (param.type === 'select') {
-    const select = el('select', {}, param.options.map(([optionValue, label]) => el('option', { value: optionValue }, label)));
+    const select = el('select', {}, param.options.map(([optionValue, label]) => el('option', { value: optionValue }, t(label))));
     select.value = value;
     return { control: select, cell: el('div', { class: 'control' }, select) };
   }
@@ -50,7 +51,7 @@ export function renderParameterForm(container, template, values, onChange) {
     const body = el('div', { class: 'group-body' });
     for (const param of template.params.filter((entry) => entry.group === group)) {
       const { control, cell } = createField(param, values[param.key]);
-      const label = el('label', { class: param.type === 'range' ? 'field stacked' : 'field' }, el('span', {}, param.label), cell);
+      const label = el('label', { class: param.type === 'range' ? 'field stacked' : 'field' }, el('span', {}, t(param.label)), cell);
       control.addEventListener('input', () => {
         current[param.key] = readControl(param, control);
         applyVisibility();
@@ -59,7 +60,7 @@ export function renderParameterForm(container, template, values, onChange) {
       fields.push({ param, label });
       body.append(label);
     }
-    container.append(el('details', { class: 'group', open: '' }, el('summary', {}, group), body));
+    container.append(el('details', { class: 'group', open: '' }, el('summary', {}, t(group)), body));
   }
   applyVisibility();
 }

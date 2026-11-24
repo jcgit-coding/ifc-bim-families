@@ -6,6 +6,7 @@
  * visibleWhen: { key, value } shows the parameter only while values[key] equals value;
  * hidden parameters are not validated.
  */
+import { t } from '../../i18n/i18n.js';
 
 export const PARAM_TYPES = Object.freeze(['text', 'number', 'range', 'select', 'boolean']);
 
@@ -42,9 +43,9 @@ export function validateParams(template, values) {
     const value = values[param.key];
     const unit = param.unit ? ` ${param.unit}` : '';
     if (!Number.isFinite(value)) {
-      errors.push(`${param.label} must be a number`);
+      errors.push(t('{label} must be a number', { label: t(param.label) }));
     } else if (value < param.min || value > param.max) {
-      errors.push(`${param.label} must be between ${param.min} and ${param.max}${unit}`);
+      errors.push(t('{label} must be between {min} and {max}{unit}', { label: t(param.label), min: param.min, max: param.max, unit }));
     }
   }
   return errors;

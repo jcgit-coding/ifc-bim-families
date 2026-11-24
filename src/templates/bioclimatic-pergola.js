@@ -1,5 +1,6 @@
 import { Measure } from '../core/ifc/measures.js';
 import { degreesToRadians, mmToMetres } from '../core/units.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * Bioclimatic pergola: perimeter frame (columns + beams) with rotating slats.
@@ -36,9 +37,9 @@ const params = [
 
 function validateGeometry(v) {
   const errors = [];
-  if (v.beamHeight >= v.height) errors.push('Beam height must be smaller than the total height');
-  if (v.depth <= 2 * v.beamWidth) errors.push('Depth is too small for the beams');
-  if (v.width <= 2 * v.beamWidth) errors.push('Width is too small for the beams');
+  if (v.beamHeight >= v.height) errors.push(t('Beam height must be smaller than the total height'));
+  if (v.depth <= 2 * v.beamWidth) errors.push(t('Depth is too small for the beams'));
+  if (v.width <= 2 * v.beamWidth) errors.push(t('Width is too small for the beams'));
   return errors;
 }
 
@@ -117,15 +118,15 @@ function compute(values) {
 
   return {
     errors,
-    warnings: overlaps ? ['At this angle the slats overlap in plan view.'] : [],
+    warnings: overlaps ? [t('At this angle the slats overlap in plan view.')] : [],
     objectType: 'Bioclimatic pergola',
     fileName: `bioclimatic-pergola_${values.width}x${values.depth}_${values.slatAngle}deg.ifc`,
     parts: [...buildColumns(d, columnCount, section), ...buildBeams(d), ...slats],
     summary: [
-      { label: 'Slats', value: String(count) },
-      { label: 'Slat pitch', value: `${(pitch * 1000).toFixed(0)} mm` },
-      { label: 'Columns', value: `${columnCount} (${values.columnShape})` },
-      { label: 'Plan area', value: `${planArea.toFixed(2)} m²` },
+      { label: t('Slats'), value: String(count) },
+      { label: t('Slat pitch'), value: `${(pitch * 1000).toFixed(0)} mm` },
+      { label: t('Columns'), value: t('{count} ({shape})', { count: columnCount, shape: t(values.columnShape) }) },
+      { label: t('Plan area'), value: `${planArea.toFixed(2)} m²` },
     ],
     propertySets: [{
       name: SET_PARAMETERS,

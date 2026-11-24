@@ -1,3 +1,4 @@
+import { t } from '../i18n/i18n.js';
 import { el } from './dom.js';
 
 const ALL = 'All';
@@ -7,10 +8,11 @@ const monogram = (name) => name.replace(/[^A-Za-z]/g, '').slice(0, MONOGRAM_LENG
 
 function createCard(entry, href) {
   const mark = el('div', { class: 'card-mark', 'aria-hidden': 'true' }, monogram(entry.name));
-  const text = el('div', {}, el('b', {}, entry.name), el('span', {}, entry.description));
-  return href
-    ? el('a', { class: 'card', href }, mark, text)
-    : el('div', { class: 'card soon' }, mark, text);
+  const title = el('b', {}, t(entry.name));
+  const text = el('div', {}, title, el('span', {}, t(entry.description)));
+  if (href) return el('a', { class: 'card', href }, mark, text);
+  title.dataset.badge = t('Soon');
+  return el('div', { class: 'card soon' }, mark, text);
 }
 
 /**
@@ -20,7 +22,7 @@ function createCard(entry, href) {
 export function renderHome(filters, catalogue, registry, activeDiscipline = ALL) {
   const disciplines = [ALL, ...registry.disciplines];
   filters.replaceChildren(...disciplines.map((discipline) => {
-    const chip = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(discipline === activeDiscipline) }, discipline);
+    const chip = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(discipline === activeDiscipline) }, t(discipline));
     chip.addEventListener('click', () => renderHome(filters, catalogue, registry, discipline));
     return chip;
   }));
@@ -32,6 +34,6 @@ export function renderHome(filters, catalogue, registry, activeDiscipline = ALL)
     registry.byDiscipline(discipline).forEach((template) =>
       grid.append(createCard(template, `#t=${template.id}`)));
     registry.plannedByDiscipline(discipline).forEach((entry) => grid.append(createCard(entry)));
-    catalogue.append(el('h2', { class: 'section-title' }, discipline), grid);
+    catalogue.append(el('h2', { class: 'section-title' }, t(discipline)), grid);
   }
 }

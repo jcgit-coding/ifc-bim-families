@@ -56,3 +56,10 @@ Format: decision, reason, alternatives considered.
 - **Why:** the first pergola version hard-coded square columns. Sections are now parameters (shape and
   dimensions). A generic `visibleWhen` rule in the engine hides parameters that do not apply, so any
   family can offer alternative sections without custom UI code.
+
+## D14 - English source strings with a Spanish dictionary (Nov 2026)
+- **Why:** the owner wants the page in English and Spanish while the code stays English. Strings are written
+  in English and looked up in `src/i18n/es.js`; a missing entry falls back to English, and the tests
+  reject missing entries for template strings. The language is the stored choice, otherwise the browser language.
+- **Alternatives:** key-based catalogues (`ui.reset`), rejected as heavier for a small app; a build-time i18n library.
+- **Consequence:** `npm run check` allows Spanish characters only in `src/i18n/es.js`.

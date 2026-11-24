@@ -6,6 +6,7 @@
 - Template: bioclimatic pergola, with parametrised column (rectangular or circular) and beam sections.
 - Viewer with overall dimensions overlay and view presets.
 - Technical-workbench interface, light theme by default with a dark toggle.
+- English and Spanish interface with a language switch; latest commit shown in the app bar.
 - Automated checks: conventions (1000 lines, kebab-case, English, no emoji), unit tests, and IFC
   validation in CI (the CI workflow has not run on GitHub yet).
 
@@ -15,7 +16,7 @@
 - More templates (structure, plumbing, stairs and railings). Plumbing needs sweeps/arcs (curved pipes).
 - More profile types (I, L, hollow sections) and boolean openings.
 - Instanced rendering for models with thousands of parts.
-- Optional UI translations (strings are English only today).
+- More languages: add a dictionary next to `src/i18n/es.js` and register it in `src/i18n/i18n.js`.
 - Verify how Revit categorises the imported IFC elements and document the mapping.
 
 ## Out of scope

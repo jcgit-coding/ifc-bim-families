@@ -4,65 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Parametric BIM family generator: choose a template, set its parameters, preview it in 3D and download an IFC4 file.">
-<title>BIM Families · IFC Generator</title>
+<title>BIM Families - IFC Generator</title>
 <link rel="stylesheet" href="styles.css">
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
 </head>
 <body>
 <header class="appbar">
-  <a href="#" class="brand" aria-label="BIM Families, catalogue">
+  <a href="#" class="brand" aria-label="BIM Families, catalogue" data-i18n-label="BIM Families, catalogue">
     <svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true">
       <path d="M2 6h16M2 10h16M2 14h16M4 3v14M16 3v14" fill="none" stroke="currentColor" stroke-width="1.5"/>
     </svg>
     BIM Families
   </a>
-  <nav id="crumbs" class="crumbs" aria-label="Breadcrumb"></nav>
+  <nav id="crumbs" class="crumbs" aria-label="Breadcrumb" data-i18n-label="Breadcrumb"></nav>
   <span class="appbar-meta">IFC4 · mm · deg</span>
-  <a class="appbar-meta appbar-version" id="build-info" target="_blank" rel="noopener">version...</a>
-  <button type="button" id="toggle-theme" class="ghost">Dark</button>
+  <a class="appbar-meta appbar-version" id="build-info" target="_blank" rel="noopener"></a>
+  <button type="button" id="toggle-language" class="ghost" data-i18n-label="Switch language"></button>
+  <button type="button" id="toggle-theme" class="ghost"></button>
 </header>
 
 <main id="home" class="home" hidden>
   <div class="home-inner">
-    <h1>Family catalogue</h1>
-    <p class="lead">Pick a template, set its parameters, check the 3D model and export an IFC4 file.</p>
-    <div id="filters" class="filters" role="group" aria-label="Filter by discipline"></div>
+    <h1 data-i18n="Family catalogue">Family catalogue</h1>
+    <p class="lead" data-i18n="Pick a template, set its parameters, check the 3D model and export an IFC4 file.">Pick a template, set its parameters, check the 3D model and export an IFC4 file.</p>
+    <div id="filters" class="filters" role="group" aria-label="Filter by discipline" data-i18n-label="Filter by discipline"></div>
     <div id="catalogue"></div>
   </div>
 </main>
 
 <div id="generator" class="workbench" hidden>
-  <aside class="pane params" aria-label="Parameters">
+  <aside class="pane params" aria-label="Parameters" data-i18n-label="Parameters">
     <div class="pane-head">
-      <h2>Parameters</h2>
-      <button type="button" id="reset-params" class="ghost">Reset</button>
+      <h2 data-i18n="Parameters">Parameters</h2>
+      <button type="button" id="reset-params" class="ghost" data-i18n="Reset">Reset</button>
     </div>
     <div id="parameter-form" class="pane-body"></div>
   </aside>
 
-  <section class="viewport" aria-label="3D preview">
+  <section class="viewport" aria-label="3D preview" data-i18n-label="3D preview">
     <div id="viewer"></div>
-    <div class="overlay top-left segmented" role="group" aria-label="Camera views">
-      <button type="button" data-view="isometric">Iso</button>
-      <button type="button" data-view="top">Top</button>
-      <button type="button" data-view="front">Front</button>
-      <button type="button" data-view="side">Side</button>
+    <div class="overlay top-left segmented" role="group" aria-label="Camera views" data-i18n-label="Camera views">
+      <button type="button" data-view="isometric" data-i18n="Iso">Iso</button>
+      <button type="button" data-view="top" data-i18n="Top">Top</button>
+      <button type="button" data-view="front" data-i18n="Front">Front</button>
+      <button type="button" data-view="side" data-i18n="Side">Side</button>
     </div>
     <div class="overlay top-right segmented">
-      <button type="button" id="toggle-dimensions" aria-pressed="true">Dimensions</button>
+      <button type="button" id="toggle-dimensions" aria-pressed="true" data-i18n="Dimensions">Dimensions</button>
     </div>
-    <p class="overlay bottom-left hint">Drag to orbit · Scroll to zoom · Right-drag to pan</p>
+    <p class="overlay bottom-left hint" data-i18n="Drag to orbit · Scroll to zoom · Right-drag to pan">Drag to orbit · Scroll to zoom · Right-drag to pan</p>
   </section>
 
-  <aside class="pane inspector" aria-label="Model">
-    <div class="pane-head"><h2>Model</h2></div>
+  <aside class="pane inspector" aria-label="Model" data-i18n-label="Model">
+    <div class="pane-head"><h2 data-i18n="Model">Model</h2></div>
     <div id="status" class="pane-body" aria-live="polite"></div>
     <div class="pane-foot">
-      <button type="button" id="download-ifc" class="primary">Export IFC</button>
+      <button type="button" id="download-ifc" class="primary" data-i18n="Export IFC">Export IFC</button>
       <p id="file-name" class="file-name"></p>
       <div class="foot-row">
-        <button type="button" id="share-link">Copy link</button>
-        <button type="button" id="download-json">Parameters</button>
+        <button type="button" id="share-link" data-i18n="Copy link">Copy link</button>
+        <button type="button" id="download-json" data-i18n="Parameters">Parameters</button>
       </div>
     </div>
   </aside>

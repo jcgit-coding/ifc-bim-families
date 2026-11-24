@@ -14,6 +14,7 @@ export const MAX_LINES = 1000;
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const CHECKED_EXTENSIONS = new Set(['.js', '.mjs', '.css', '.html', '.md', '.py', '.yml', '.json']);
 const IGNORED_DIRECTORIES = new Set(['vendor', 'node_modules', '.git', '_archive', 'samples-out']);
+const SPANISH_DICTIONARY = 'src/i18n/es.js'; // the only file that may contain Spanish text
 const ALLOWED_UPPERCASE_FILES = new Set(['README.md', 'LICENSE.md']);
 const KEBAB_FILE_NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 // Spanish-only letters and punctuation, written as escapes so this file stays plain ASCII.
@@ -55,7 +56,7 @@ export function collectViolations(root = ROOT) {
     const lines = readFileSync(file, 'utf8').split('\n');
     if (lines.length > MAX_LINES) violations.push(`${name}: ${lines.length} lines (max ${MAX_LINES})`);
     lines.forEach((line, index) => {
-      if (SPANISH_CHARACTERS.test(line)) violations.push(`${name}:${index + 1}: non-English text`);
+      if (name !== SPANISH_DICTIONARY && SPANISH_CHARACTERS.test(line)) violations.push(`${name}:${index + 1}: non-English text`);
       if (containsEmoji(line)) violations.push(`${name}:${index + 1}: emoji are not allowed`);
     });
   }

@@ -1,3 +1,5 @@
+import { t } from '../i18n/i18n.js';
+
 const STORAGE_KEY = 'bim-families-theme';
 const DEFAULT_THEME = 'light';
 const THEMES = ['light', 'dark'];
@@ -11,13 +13,19 @@ function readStoredTheme() {
   }
 }
 
-function applyTheme(theme, button) {
-  document.documentElement.dataset.theme = theme;
-  button.textContent = theme === 'light' ? 'Dark' : 'Light';
-  button.setAttribute('aria-label', `Switch to ${theme === 'light' ? 'dark' : 'light'} theme`);
+/** Updates the button text for the active theme (also called after a language change). */
+function labelButton(button) {
+  const isLight = document.documentElement.dataset.theme === 'light';
+  button.textContent = t(isLight ? 'Dark' : 'Light');
+  button.setAttribute('aria-label', t(isLight ? 'Switch to dark theme' : 'Switch to light theme'));
 }
 
-/** Light theme is the default; the toggle remembers the user's choice. */
+function applyTheme(theme, button) {
+  document.documentElement.dataset.theme = theme;
+  labelButton(button);
+}
+
+/** Light theme is the default; the toggle remembers the user's choice. Returns a function that relabels the button. */
 export function initTheme(button) {
   applyTheme(readStoredTheme(), button);
   button.addEventListener('click', () => {
@@ -29,4 +37,5 @@ export function initTheme(button) {
       // Ignored: the theme still applies for this session.
     }
   });
+  return () => labelButton(button);
 }

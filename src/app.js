@@ -11,6 +11,7 @@ import { renderParameterForm } from './ui/parameter-form.js';
 import { renderStatus } from './ui/status-panel.js';
 import { initTheme } from './ui/theme.js';
 import { renderBuildInfo } from './ui/build-info.js';
+import { getLanguage, LANGUAGES, onLanguageChange, setLanguage, t, translateDocument } from './i18n/i18n.js';
 
 const SHARE_LABEL_MS = 1800;
 
@@ -86,11 +87,11 @@ elements.downloadJson.addEventListener('click', () => {
 elements.share.addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(location.href);
-    elements.share.textContent = 'Link copied';
+    elements.share.textContent = t('Link copied');
   } catch {
-    window.prompt('Copy this link:', location.href);
+    window.prompt(t('Copy this link:'), location.href);
   }
-  setTimeout(() => { elements.share.textContent = 'Copy link'; }, SHARE_LABEL_MS);
+  setTimeout(() => { elements.share.textContent = t('Copy link'); }, SHARE_LABEL_MS);
 });
 
 document.querySelectorAll('[data-view]').forEach((button) =>
@@ -102,7 +103,24 @@ elements.toggleDimensions.addEventListener('click', () => {
   viewer.setDimensionsVisible(visible);
 });
 
-initTheme(query('#toggle-theme'));
-renderBuildInfo(query('#build-info'));
+const relabelTheme = initTheme(query('#toggle-theme'));
+const relabelBuildInfo = renderBuildInfo(query('#build-info'));
+const languageButton = query('#toggle-language');
+
+/** The button shows the language it switches to. */
+const otherLanguage = () => LANGUAGES.find((language) => language !== getLanguage());
+
+function applyLanguage() {
+  translateDocument();
+  languageButton.textContent = otherLanguage().toUpperCase();
+  relabelTheme();
+  relabelBuildInfo();
+  route();
+}
+
+languageButton.addEventListener('click', () => setLanguage(otherLanguage()));
+onLanguageChange(applyLanguage);
 window.addEventListener('hashchange', route);
+translateDocument();
+languageButton.textContent = otherLanguage().toUpperCase();
 route();

@@ -24,7 +24,8 @@ Status: Done / Partial / Pending.
 | ID | Requirement | Status |
 | --- | --- | --- |
 | Q1 | No source file longer than **1000 lines**. | Enforced by `npm run check` |
-| Q2 | **Everything in English** (code, comments, UI, documentation) for a global project. | Enforced by `npm run check` (Spanish characters are rejected) |
+| Q2 | **Code, comments, documentation and commits in English** for a global project. The UI source text is English. | Enforced by `npm run check` (Spanish characters are rejected outside `src/i18n/es.js`) |
+| U5 | The interface is available in **English and Spanish**, switchable from the app bar. | Done (`src/i18n`) |
 | Q3 | **Logical coherence** and **no redundancy**: shared logic lives in `src/core`. | Reviewed by structure; see `standards.md` |
 | Q4 | **Standardised names** for files, variables and constants. | Documented in `standards.md`, file names enforced |
 | Q5 | **Professional back end**: a clean engine layer separated from the UI. | Done (`src/core`; the app has no server) |

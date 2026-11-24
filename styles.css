@@ -65,7 +65,7 @@ a.card:hover { border-color: var(--accent); background: var(--accent-soft); }
 .card span { color: var(--ink-2); font-size: 12px; }
 .card.soon { border-style: dashed; background: transparent; }
 .card.soon .card-mark { color: var(--ink-3); }
-.card.soon b::after { content: "Soon"; margin-left: 8px; padding: 1px 6px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--ink-3); font: 500 10px var(--font-mono); text-transform: uppercase; }
+.card.soon b::after { content: attr(data-badge); margin-left: 8px; padding: 1px 6px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--ink-3); font: 500 10px var(--font-mono); text-transform: uppercase; }
 
 /* Workbench */
 .workbench { flex: 1; min-height: 0; display: grid; grid-template-columns: 300px minmax(0, 1fr) 272px; }

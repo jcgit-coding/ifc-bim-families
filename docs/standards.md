@@ -3,7 +3,10 @@
 These rules are checked automatically by `npm run check` (and in CI).
 
 ## Language
-- All code, comments, identifiers, UI text, commit messages and documentation are in **English**.
+- All code, comments, identifiers, commit messages and documentation are in **English**.
+- UI text is written in English in the source and shown through `t()` (`src/i18n/i18n.js`). Spanish lives
+  only in `src/i18n/es.js`, the one file where the checker allows Spanish characters. Every new UI string
+  needs a Spanish entry; IFC content (names, property sets, file names) is never translated.
 
 ## Prohibited
 - **Emoji, pictographs and dingbats** are forbidden everywhere: code, UI text, comments, documentation
@@ -12,6 +15,9 @@ These rules are checked automatically by `npm run check` (and in CI).
 ## Interface defaults
 - The **light theme is the default**. The dark theme is an explicit user choice (toggle in the app bar)
   and is never selected from the operating-system preference.
+
+- The **language** is the stored choice, otherwise the browser language (Spanish if it starts with `es`,
+  English otherwise). The app-bar button switches it and the URL state is kept.
 
 ## File rules
 - At most **1000 lines per file** (aim for far fewer; split by responsibility).

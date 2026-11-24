@@ -6,6 +6,7 @@
 - Template: bioclimatic pergola, with parametrised column (rectangular or circular) and beam sections.
 - Viewer with overall dimensions overlay and view presets.
 - Technical-workbench interface, light theme by default with a dark toggle.
+- Materials in the IFC (named IfcMaterial with surface colour, selectable per component).
 - English and Spanish interface with a language switch; latest commit shown in the app bar.
 - Automated checks: conventions (1000 lines, kebab-case, English, no emoji), unit tests, and IFC
   validation in CI (the CI workflow has not run on GitHub yet).
@@ -17,6 +18,7 @@
 - More profile types (I, L, hollow sections) and boolean openings.
 - Instanced rendering for models with thousands of parts.
 - More languages: add a dictionary next to `src/i18n/es.js` and register it in `src/i18n/i18n.js`.
+- IFC type objects (IfcColumnType, IfcBeamType, ...) so Revit creates family types, and material layers/quantities.
 - Verify how Revit categorises the imported IFC elements and document the mapping.
 
 ## Out of scope

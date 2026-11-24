@@ -12,6 +12,7 @@ src/
     ifc/           STEP helpers, typed measures, profile writers, IFC writer
     geometry/      vector helpers for part orientation
     templates/     parameter handling, template contract/registry, evaluation
+    materials.js   shared material catalogue (name, category, colour)
     units.js       metre/centimetre/millimetre/degree conversions
     url-state.js   shareable URL state
   i18n/            translation layer (t(), language switch) and the Spanish dictionary
@@ -34,6 +35,7 @@ viewer / buildIfc`. The UI and the viewer never import a specific template.
    by default with a dark toggle (see `design.md`).
 3c. **Section parametrisation (done):** rectangular or circular columns and beam sections, conditional
    parameters (`visibleWhen`), emoji ban enforced by the checker.
+3e. **Materials (done):** IfcMaterial with colour per part, material parameters (see decision D15).
 3d. **Languages (done):** English and Spanish interface (see decision D14).
 4. **Second family (next):** structural (profile sections) or plumbing (pipes with elbows) to prove the
    engine is generic; likely needs new profile types and curved sweeps.

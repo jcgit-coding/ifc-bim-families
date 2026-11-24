@@ -1,5 +1,6 @@
 import { StepBuilder, createGuid, formatReal, quote, toList } from './step.js';
 import { writeProfile } from './profiles.js';
+import { createMaterialWriter } from './material-writer.js';
 
 /**
  * Generic IFC4 writer. It knows nothing about specific families: it receives a
@@ -9,7 +10,8 @@ import { writeProfile } from './profiles.js';
  * Model contract (metres, degrees):
  *   { name, objectType, parts: Part[], propertySets: PropertySet[] }
  *   Part        { name, ifcClass, predefinedType, origin, extrusionAxis, profileAxis,
- *                 profile, length, propertySets? }
+ *                 profile, length, material?, propertySets? }
+ *   Material    { name, category?, color: [r, g, b], transparency? }  (see src/core/materials.js)
  *   PropertySet { name, properties: [{ name, value }] }   (value from Measure.*)
  */
 
@@ -84,19 +86,29 @@ function writePropertySets(step, element, propertySets = []) {
   }
 }
 
-function writePart(step, geometry, tree, part) {
+function writePart(step, geometry, tree, materials, part) {
   const profile = writeProfile(step, part.profile);
   const solid = step.add(
     `IFCEXTRUDEDAREASOLID(${profile},${geometry.worldPlacement()},${geometry.direction(WORLD_Z)},${formatReal(part.length)})`);
   const representation = step.add(
     `IFCSHAPEREPRESENTATION(${tree.bodyContext},'Body','SweptSolid',${toList([solid])})`);
+  if (part.material) step.add(`IFCSTYLEDITEM(${solid},${toList([materials.styleFor(part.material)])},$)`);
   const shape = step.add(`IFCPRODUCTDEFINITIONSHAPE($,$,${toList([representation])})`);
   const placement = geometry.localPlacement(
     tree.storeyPlacement, geometry.axisPlacement(part.origin, part.extrusionAxis, part.profileAxis));
   const element = step.add(
     `${part.ifcClass.toUpperCase()}(${globalId()},$,${quote(part.name)},$,$,${placement},${shape},$,.${part.predefinedType}.)`);
+  if (part.material) materials.associate(part.material, element);
   writePropertySets(step, element, part.propertySets);
   return element;
+}
+
+function assertMaterial(part) {
+  const { material } = part;
+  if (material === undefined) return;
+  const validColour = Array.isArray(material.color) && material.color.length === 3
+    && material.color.every((channel) => channel >= 0 && channel <= 1);
+  if (!material.name || !validColour) throw new Error(`Invalid material in part "${part.name}"`);
 }
 
 function assertModel(model) {
@@ -105,6 +117,7 @@ function assertModel(model) {
     throw new Error('IFC model needs at least one part');
   }
   for (const part of model.parts) {
+    assertMaterial(part);
     if (!SUPPORTED_ELEMENT_CLASSES.includes(part.ifcClass)) {
       throw new Error(`Unsupported IFC class "${part.ifcClass}" in part "${part.name}"`);
     }
@@ -118,7 +131,9 @@ export function buildIfc(model) {
   const geometry = createGeometryWriters(step);
   const tree = writeSpatialTree(step, geometry, model.name);
 
-  const elements = model.parts.map((part) => writePart(step, geometry, tree, part));
+  const materials = createMaterialWriter(step, tree.bodyContext);
+  const elements = model.parts.map((part) => writePart(step, geometry, tree, materials, part));
+  materials.writeAssociations();
 
   const assemblyPlacement = geometry.localPlacement(tree.storeyPlacement, geometry.worldPlacement());
   const assembly = step.add(

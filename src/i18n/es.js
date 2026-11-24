@@ -57,6 +57,16 @@ export default {
   'Pipes and fittings': 'Tuberías y accesorios',
   'Straight runs, elbows and branches.': 'Tramos rectos, codos y derivaciones.',
 
+  // Materials
+  'Materials': 'Materiales',
+  'Aluminium, anthracite': 'Aluminio, antracita',
+  'Aluminium, white': 'Aluminio, blanco',
+  'Aluminium, natural': 'Aluminio, natural',
+  'Steel, galvanised': 'Acero, galvanizado',
+  'Timber, oak': 'Madera, roble',
+  'Concrete, grey': 'Hormigón, gris',
+  'Glass, clear': 'Vidrio, transparente',
+
   // Bioclimatic pergola
   'Bioclimatic pergola': 'Pérgola bioclimática',
   'Perimeter frame with columns, beams and rotating slats.': 'Marco perimetral con columnas, vigas y lamas giratorias.',

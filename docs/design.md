@@ -46,6 +46,9 @@ The viewer uses neutral grey for structure and teal for operable parts; dimensio
 - The app-bar button (EN/ES) switches the language and shows the language it will switch to. The page,
   form, messages and summary are re-rendered; the URL and parameter values are kept.
 
+- Materials are chosen per component in a Materials group; the viewer keeps role colours (operable parts in
+  teal) and does not show material colours.
+
 ## Open items
 - Dark theme switches correctly (verified through computed styles) but has not been reviewed visually.
 - Per-part measurements and part selection in the viewer.

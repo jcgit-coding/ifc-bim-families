@@ -1,4 +1,5 @@
 import { Measure } from '../core/ifc/measures.js';
+import { getMaterial, MATERIAL_OPTIONS } from '../core/materials.js';
 import { valuesInMetres } from '../core/templates/params.js';
 import { degreesToRadians } from '../core/units.js';
 import { t } from '../i18n/i18n.js';
@@ -12,6 +13,7 @@ const SLAT_ANGLE_MAX = 110;
 const EPSILON = 1e-9;
 const SET_PARAMETERS = 'Custom_BioclimaticPergola_Parameters';
 const SET_SLAT = 'Custom_BioclimaticPergola_Slat';
+const DEFAULT_MATERIAL = 'aluminium-anthracite';
 
 const params = [
   { key: 'name', label: 'Name', type: 'text', group: 'General', default: 'Bioclimatic pergola' },
@@ -34,6 +36,9 @@ const params = [
   { key: 'slatThickness', label: 'Slat thickness', type: 'number', unit: 'cm', group: 'Slats', default: 3, min: 0.5, max: 10, step: 0.1 },
   { key: 'slatGap', label: 'Minimum gap', type: 'number', unit: 'cm', group: 'Slats', default: 2, min: 0, max: 20, step: 0.1 },
   { key: 'slatAngle', label: 'Opening angle', type: 'number', unit: 'deg', group: 'Slats', default: 0, min: 0, max: SLAT_ANGLE_MAX, step: 1 },
+  { key: 'columnMaterial', label: 'Columns', type: 'select', group: 'Materials', default: DEFAULT_MATERIAL, options: MATERIAL_OPTIONS },
+  { key: 'beamMaterial', label: 'Beams', type: 'select', group: 'Materials', default: DEFAULT_MATERIAL, options: MATERIAL_OPTIONS },
+  { key: 'slatMaterial', label: 'Slats', type: 'select', group: 'Materials', default: DEFAULT_MATERIAL, options: MATERIAL_OPTIONS },
 ];
 
 function validateGeometry(v) {
@@ -64,7 +69,7 @@ function buildColumns(d, columnCount, section) {
       columns.push({
         name: `Column ${columns.length + 1}`, ifcClass: 'IfcColumn', predefinedType: 'COLUMN', role: 'structure',
         origin: [x, y, 0], extrusionAxis: [0, 0, 1], profileAxis: [1, 0, 0],
-        profile, length: d.height - d.beamHeight,
+        profile, length: d.height - d.beamHeight, material: getMaterial(d.columnMaterial),
       });
     }
   }
@@ -76,7 +81,7 @@ function buildBeams(d) {
   const profile = { type: 'rectangle', width: d.beamWidth, depth: d.beamHeight };
   const beam = (name, origin, extrusionAxis, profileAxis, length) => ({
     name, ifcClass: 'IfcBeam', predefinedType: 'BEAM', role: 'structure',
-    origin, extrusionAxis, profileAxis, profile, length,
+    origin, extrusionAxis, profileAxis, profile, length, material: getMaterial(d.beamMaterial),
   });
   const sideLength = d.depth - 2 * d.beamWidth;
   return [
@@ -100,7 +105,7 @@ function buildSlats(d, angleDegrees) {
     extrusionAxis: [1, 0, 0],
     profileAxis: [0, Math.cos(angle), Math.sin(angle)],
     profile: { type: 'rectangle', width: d.slatWidth, depth: d.slatThickness },
-    length: d.width - 2 * d.beamWidth,
+    length: d.width - 2 * d.beamWidth, material: getMaterial(d.slatMaterial),
     propertySets: [{ name: SET_SLAT, properties: [{ name: 'OpeningAngle', value: Measure.angle(angleDegrees) }] }],
   }));
   return { slats, count, pitch, overlaps: d.slatWidth * Math.cos(angle) > pitch + EPSILON };
@@ -144,6 +149,9 @@ function compute(values) {
         { name: 'SlatGap', value: Measure.length(d.slatGap) },
         { name: 'SlatPitch', value: Measure.length(pitch) },
         { name: 'SlatAngle', value: Measure.angle(values.slatAngle) },
+        { name: 'ColumnMaterial', value: Measure.label(getMaterial(d.columnMaterial).name) },
+        { name: 'BeamMaterial', value: Measure.label(getMaterial(d.beamMaterial).name) },
+        { name: 'SlatMaterial', value: Measure.label(getMaterial(d.slatMaterial).name) },
         { name: 'ColumnCount', value: Measure.integer(columnCount) },
         { name: 'SlatCount', value: Measure.integer(count) },
         { name: 'PlanArea', value: Measure.area(planArea) },

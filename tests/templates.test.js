@@ -83,3 +83,14 @@ test('lengths are entered in metres and sections in centimetres', () => {
   const front = result.parts.find((part) => part.name === 'Front beam');
   assert.equal(front.length, 5);
 });
+
+test('every part of the pergola has a material and materials can be changed', () => {
+  const [template] = registry.templates;
+  const base = defaultValues(template);
+  const result = evaluateTemplate(template, { ...base, columnMaterial: 'timber-oak', slatMaterial: 'glass-clear' });
+  assert.ok(result.parts.every((part) => part.material));
+  assert.equal(result.parts.find((part) => part.ifcClass === 'IfcColumn').material.category, 'Wood');
+  assert.equal(result.parts.find((part) => part.ifcClass === 'IfcShadingDevice').material.name, 'Glass, clear');
+  const ifc = buildIfc(toIfcModel(template.name, result));
+  assert.equal((ifc.match(/IFCMATERIAL\(/g) ?? []).length, 3); // timber, aluminium (beams), glass
+});

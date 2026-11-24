@@ -9,6 +9,7 @@ import sys
 
 import ifcopenshell
 import ifcopenshell.geom
+import ifcopenshell.util.element
 import numpy as np
 
 
@@ -23,6 +24,9 @@ def validate(path: pathlib.Path) -> None:
         shape = ifcopenshell.geom.create_shape(settings, element)
         vertices.append(np.array(shape.geometry.verts).reshape(-1, 3))
     assert vertices, f"{path.name}: no geometry found"
+    unassigned = [e.Name for e in model.by_type("IfcElement")
+                  if e.Representation is not None and not ifcopenshell.util.element.get_material(e)]
+    assert not unassigned, f"{path.name}: elements without a material: {unassigned}"
     points = np.vstack(vertices)
     size = points.max(axis=0) - points.min(axis=0)
     assert (size > 0).all(), f"{path.name}: degenerate bounding box {size}"

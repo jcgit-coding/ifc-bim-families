@@ -50,3 +50,19 @@ test('rejects invalid models', () => {
   assert.throws(() => buildIfc({ ...model, parts: [{ ...rectanglePart, ifcClass: 'IfcSpaceship' }] }), /Unsupported IFC class/);
   assert.throws(() => buildIfc({ ...model, parts: [{ ...rectanglePart, profile: { type: 'hexagon' } }] }), /Unsupported profile/);
 });
+
+test('materials are written once per name and associated with their elements', () => {
+  const steel = { name: 'Steel, galvanised', category: 'Steel', color: [0.6, 0.63, 0.66] };
+  const text = buildIfc({ ...model, parts: [{ ...rectanglePart, material: steel }, { ...circlePart, material: steel }] });
+  assert.equal((text.match(/IFCMATERIAL\(/g) ?? []).length, 1);
+  assert.match(text, /IFCMATERIAL\('Steel, galvanised',\$,'Steel'\)/);
+  assert.equal((text.match(/IFCRELASSOCIATESMATERIAL/g) ?? []).length, 1);
+  assert.match(text, /IFCRELASSOCIATESMATERIAL\([^)]*\(#\d+,#\d+\),#\d+\)/);
+  assert.match(text, /IFCSURFACESTYLERENDERING\(#\d+,0\.,/);
+  assert.match(text, /IFCMATERIALDEFINITIONREPRESENTATION/);
+});
+
+test('invalid materials are rejected', () => {
+  const bad = { ...rectanglePart, material: { name: 'Bad', color: [2, 0, 0] } };
+  assert.throws(() => buildIfc({ ...model, parts: [bad] }), /Invalid material/);
+});

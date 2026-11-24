@@ -66,6 +66,10 @@ property names and file names are never translated.
 - **Profiles:** `rectangle { width, depth }` and `circle { radius }`. New shapes: add a writer in
   `src/core/ifc/profiles.js` and a geometry factory in `src/viewer/part-geometry.js`.
 - **IFC classes:** see `SUPPORTED_ELEMENT_CLASSES` in `src/core/ifc/writer.js`.
+- **Materials:** give every part a `material` from `src/core/materials.js` (`getMaterial(id)`) and offer
+  `MATERIAL_OPTIONS` as a `select` parameter. The writer creates one `IfcMaterial` per name with a surface
+  colour and associates it with the elements, so Revit imports named materials. Add new materials to the
+  catalogue (and their Spanish names to `src/i18n/es.js`).
 - **Roles** (viewer colours): `structure`, `operable`, `finish`, `service`.
 - **Part axes:** `extrusionAxis` is the direction the profile is extruded; `profileAxis` is the
   direction of the profile's `width`. `origin` is the centre of the profile at the start of the extrusion.

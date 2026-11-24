@@ -58,6 +58,12 @@ Format: decision, reason, alternatives considered.
   dimensions). A generic `visibleWhen` rule in the engine hides parameters that do not apply, so any
   family can offer alternative sections without custom UI code.
 
+## D15 - Materials as IfcMaterial with surface style (Nov 2026)
+- **Why:** a family for Revit needs named materials, not only geometry. Each part references a catalogue material;
+  the writer emits `IfcMaterial` (name, category), an `IfcSurfaceStyle` colour on the solid and a material
+  definition representation, and one `IfcRelAssociatesMaterial` per material. CI validates that every element has a material.
+- **Limits:** single material per part (no layer sets), no physical properties yet, no IFC type objects yet.
+
 ## D14 - English source strings with a Spanish dictionary (Nov 2026)
 - **Why:** the owner wants the page in English and Spanish while the code stays English. Strings are written
   in English and looked up in `src/i18n/es.js`; a missing entry falls back to English, and the tests

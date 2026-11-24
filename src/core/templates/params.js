@@ -7,6 +7,7 @@
  * hidden parameters are not validated.
  */
 import { t } from '../../i18n/i18n.js';
+import { isLengthUnit, toMetres } from '../units.js';
 
 export const PARAM_TYPES = Object.freeze(['text', 'number', 'range', 'select', 'boolean']);
 
@@ -28,6 +29,14 @@ export function coerceValue(param, raw) {
   if (isNumeric(param)) return Number.parseFloat(raw);
   if (param.type === 'boolean') return raw === true || raw === 'true';
   return String(raw);
+}
+
+/** Returns the values with every length parameter (m, cm, mm) converted to metres; other values are kept. */
+export function valuesInMetres(template, values) {
+  return Object.fromEntries(template.params.map((param) => {
+    const value = values[param.key];
+    return [param.key, isLengthUnit(param.unit) ? toMetres(value, param.unit) : value];
+  }));
 }
 
 /** Merges raw values over the defaults, coercing each to its type. */

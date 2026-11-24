@@ -25,7 +25,7 @@ test('every template produces a valid IFC with its default values', () => {
 
 test('out-of-range values are reported without calling compute()', () => {
   const [template] = registry.templates;
-  const values = { ...defaultValues(template), width: 1 };
+  const values = { ...defaultValues(template), width: 0.1 };
   const result = evaluateTemplate(template, values);
   assert.equal(result.errors.length, 1);
   assert.deepEqual(result.parts, []);
@@ -34,14 +34,14 @@ test('out-of-range values are reported without calling compute()', () => {
 test('column and beam sections are parametrised', () => {
   const [template] = registry.templates;
   const base = defaultValues(template);
-  const rectangular = evaluateTemplate(template, { ...base, columnWidth: 200, columnDepth: 300 });
+  const rectangular = evaluateTemplate(template, { ...base, columnWidth: 20, columnDepth: 30 });
   const column = rectangular.parts.find((part) => part.ifcClass === 'IfcColumn');
   assert.deepEqual(column.profile, { type: 'rectangle', width: 0.2, depth: 0.3 });
 
-  const circular = evaluateTemplate(template, { ...base, columnShape: 'circular', columnDiameter: 250 });
+  const circular = evaluateTemplate(template, { ...base, columnShape: 'circular', columnDiameter: 25 });
   assert.deepEqual(circular.parts.find((part) => part.ifcClass === 'IfcColumn').profile, { type: 'circle', radius: 0.125 });
 
-  const beams = evaluateTemplate(template, { ...base, beamWidth: 100, beamHeight: 250 })
+  const beams = evaluateTemplate(template, { ...base, beamWidth: 10, beamHeight: 25 })
     .parts.filter((part) => part.ifcClass === 'IfcBeam');
   assert.ok(beams.every((beam) => beam.profile.width === 0.1 && beam.profile.depth === 0.25));
 });
@@ -63,7 +63,7 @@ test('registry rejects duplicate ids and malformed templates', () => {
 
 test('URL state round-trips and omits default values', () => {
   const [template] = registry.templates;
-  const values = { ...defaultValues(template), width: 5000, slatAngle: 45 };
+  const values = { ...defaultValues(template), width: 5, slatAngle: 45 };
   const hash = encodeState(template, values);
   assert.match(hash, /^t=bioclimatic-pergola&/);
   assert.ok(!hash.includes('depth='));
@@ -71,4 +71,15 @@ test('URL state round-trips and omits default values', () => {
   assert.equal(decoded.template.id, template.id);
   assert.deepEqual(decoded.values, coerceAll(template, values));
   assert.equal(decodeState(registry, '').template, undefined);
+});
+
+test('lengths are entered in metres and sections in centimetres', () => {
+  const [template] = registry.templates;
+  const byKey = Object.fromEntries(template.params.map((param) => [param.key, param.unit]));
+  assert.equal(byKey.width, 'm');
+  assert.equal(byKey.columnWidth, 'cm');
+  const result = evaluateTemplate(template, { ...defaultValues(template), width: 5, depth: 3 });
+  assert.ok(result.fileName.includes('5x3m'));
+  const front = result.parts.find((part) => part.name === 'Front beam');
+  assert.equal(front.length, 5);
 });

@@ -1,5 +1,6 @@
 import { Measure } from '../core/ifc/measures.js';
-import { degreesToRadians, mmToMetres } from '../core/units.js';
+import { valuesInMetres } from '../core/templates/params.js';
+import { degreesToRadians } from '../core/units.js';
 import { t } from '../i18n/i18n.js';
 
 /**
@@ -14,24 +15,24 @@ const SET_SLAT = 'Custom_BioclimaticPergola_Slat';
 
 const params = [
   { key: 'name', label: 'Name', type: 'text', group: 'General', default: 'Bioclimatic pergola' },
-  { key: 'width', label: 'Width (slat length)', type: 'number', unit: 'mm', group: 'Dimensions', default: 4000, min: 1000, max: 12000, step: 50 },
-  { key: 'depth', label: 'Depth', type: 'number', unit: 'mm', group: 'Dimensions', default: 3000, min: 1000, max: 12000, step: 50 },
-  { key: 'height', label: 'Total height', type: 'number', unit: 'mm', group: 'Dimensions', default: 2600, min: 2000, max: 5000, step: 50 },
+  { key: 'width', label: 'Width (slat length)', type: 'number', unit: 'm', group: 'Dimensions', default: 4, min: 1, max: 12, step: 0.05 },
+  { key: 'depth', label: 'Depth', type: 'number', unit: 'm', group: 'Dimensions', default: 3, min: 1, max: 12, step: 0.05 },
+  { key: 'height', label: 'Total height', type: 'number', unit: 'm', group: 'Dimensions', default: 2.6, min: 2, max: 5, step: 0.05 },
   { key: 'columnCount', label: 'Count', type: 'select', group: 'Columns', default: '4',
     options: [['4', '4 (corners)'], ['2', '2 (front only)']] },
   { key: 'columnShape', label: 'Section shape', type: 'select', group: 'Columns', default: 'rectangular',
     options: [['rectangular', 'Rectangular'], ['circular', 'Circular']] },
-  { key: 'columnWidth', label: 'Section width (X)', type: 'number', unit: 'mm', group: 'Columns', default: 150, min: 50, max: 500, step: 5,
+  { key: 'columnWidth', label: 'Section width (X)', type: 'number', unit: 'cm', group: 'Columns', default: 15, min: 5, max: 50, step: 0.5,
     visibleWhen: { key: 'columnShape', value: 'rectangular' } },
-  { key: 'columnDepth', label: 'Section depth (Y)', type: 'number', unit: 'mm', group: 'Columns', default: 150, min: 50, max: 500, step: 5,
+  { key: 'columnDepth', label: 'Section depth (Y)', type: 'number', unit: 'cm', group: 'Columns', default: 15, min: 5, max: 50, step: 0.5,
     visibleWhen: { key: 'columnShape', value: 'rectangular' } },
-  { key: 'columnDiameter', label: 'Diameter', type: 'number', unit: 'mm', group: 'Columns', default: 150, min: 50, max: 500, step: 5,
+  { key: 'columnDiameter', label: 'Diameter', type: 'number', unit: 'cm', group: 'Columns', default: 15, min: 5, max: 50, step: 0.5,
     visibleWhen: { key: 'columnShape', value: 'circular' } },
-  { key: 'beamWidth', label: 'Section width', type: 'number', unit: 'mm', group: 'Beams', default: 150, min: 50, max: 400, step: 5 },
-  { key: 'beamHeight', label: 'Section height', type: 'number', unit: 'mm', group: 'Beams', default: 200, min: 50, max: 500, step: 5 },
-  { key: 'slatWidth', label: 'Slat width', type: 'number', unit: 'mm', group: 'Slats', default: 200, min: 50, max: 500, step: 5 },
-  { key: 'slatThickness', label: 'Slat thickness', type: 'number', unit: 'mm', group: 'Slats', default: 30, min: 5, max: 100, step: 1 },
-  { key: 'slatGap', label: 'Minimum gap', type: 'number', unit: 'mm', group: 'Slats', default: 20, min: 0, max: 200, step: 1 },
+  { key: 'beamWidth', label: 'Section width', type: 'number', unit: 'cm', group: 'Beams', default: 15, min: 5, max: 40, step: 0.5 },
+  { key: 'beamHeight', label: 'Section height', type: 'number', unit: 'cm', group: 'Beams', default: 20, min: 5, max: 50, step: 0.5 },
+  { key: 'slatWidth', label: 'Slat width', type: 'number', unit: 'cm', group: 'Slats', default: 20, min: 5, max: 50, step: 0.5 },
+  { key: 'slatThickness', label: 'Slat thickness', type: 'number', unit: 'cm', group: 'Slats', default: 3, min: 0.5, max: 10, step: 0.1 },
+  { key: 'slatGap', label: 'Minimum gap', type: 'number', unit: 'cm', group: 'Slats', default: 2, min: 0, max: 20, step: 0.1 },
   { key: 'slatAngle', label: 'Opening angle', type: 'number', unit: 'deg', group: 'Slats', default: 0, min: 0, max: SLAT_ANGLE_MAX, step: 1 },
 ];
 
@@ -106,12 +107,11 @@ function buildSlats(d, angleDegrees) {
 }
 
 function compute(values) {
-  const errors = validateGeometry(values);
+  const d = valuesInMetres({ params }, values);
+  const errors = validateGeometry(d);
   if (errors.length > 0) return { errors };
 
   const columnCount = Number.parseInt(values.columnCount, 10);
-  const d = Object.fromEntries(Object.entries(values).map(([key, value]) =>
-    [key, typeof value === 'number' && key !== 'slatAngle' ? mmToMetres(value) : value]));
   const { slats, count, pitch, overlaps } = buildSlats(d, values.slatAngle);
   const planArea = d.width * d.depth;
   const section = columnSection(d, values.columnShape);
@@ -120,11 +120,11 @@ function compute(values) {
     errors,
     warnings: overlaps ? [t('At this angle the slats overlap in plan view.')] : [],
     objectType: 'Bioclimatic pergola',
-    fileName: `bioclimatic-pergola_${values.width}x${values.depth}_${values.slatAngle}deg.ifc`,
+    fileName: `bioclimatic-pergola_${values.width}x${values.depth}m_${values.slatAngle}deg.ifc`,
     parts: [...buildColumns(d, columnCount, section), ...buildBeams(d), ...slats],
     summary: [
       { label: t('Slats'), value: String(count) },
-      { label: t('Slat pitch'), value: `${(pitch * 1000).toFixed(0)} mm` },
+      { label: t('Slat pitch'), value: `${(pitch * 100).toFixed(1)} cm` },
       { label: t('Columns'), value: t('{count} ({shape})', { count: columnCount, shape: t(values.columnShape) }) },
       { label: t('Plan area'), value: `${planArea.toFixed(2)} m²` },
     ],

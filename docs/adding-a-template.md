@@ -8,16 +8,16 @@ sharing links and the IFC export.
 
 ```js
 import { Measure } from '../core/ifc/measures.js';
-import { mmToMetres } from '../core/units.js';
+import { valuesInMetres } from '../core/templates/params.js';
 
 const params = [
   { key: 'name', label: 'Name', type: 'text', group: 'General', default: 'Steel beam' },
-  { key: 'length', label: 'Length', type: 'number', unit: 'mm', group: 'Dimensions',
-    default: 3000, min: 500, max: 12000, step: 10 },
+  { key: 'length', label: 'Length', type: 'number', unit: 'm', group: 'Dimensions',
+    default: 3, min: 0.5, max: 12, step: 0.05 },
 ];
 
 function compute(values) {
-  const length = mmToMetres(values.length);
+  const { length } = valuesInMetres({ params }, values);
   return {
     errors: [],                       // cross-field rules only; ranges are checked by the engine
     warnings: [],

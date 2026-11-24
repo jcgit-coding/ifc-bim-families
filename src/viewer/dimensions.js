@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { MM_PER_METRE } from '../core/units.js';
 
+const DECIMALS = 2;
 const LINE_COLOR = 0xc2410c;
 const LABEL_FONT = '600 40px ui-monospace, Consolas, monospace';
 const LABEL_CANVAS = { width: 256, height: 64 };
@@ -36,14 +36,13 @@ function createLine(points) {
   return line;
 }
 
-/** One dimension: a line between two points, extension lines from the model and a label in mm. */
+/** One dimension: a line between two points, extension lines from the model and a label in metres. */
 function createDimension(modelStart, modelEnd, lineStart, lineEnd, labelHeight) {
   const group = new THREE.Group();
   group.add(createLine([lineStart, lineEnd]));
   group.add(createLine([modelStart, lineStart]));
   group.add(createLine([modelEnd, lineEnd]));
-  const millimetres = Math.round(modelStart.distanceTo(modelEnd) * MM_PER_METRE);
-  const label = createLabel(`${millimetres} mm`, labelHeight);
+  const label = createLabel(`${modelStart.distanceTo(modelEnd).toFixed(DECIMALS)} m`, labelHeight);
   label.position.copy(lineStart).add(lineEnd).multiplyScalar(0.5);
   group.add(label);
   return group;

@@ -26,8 +26,9 @@ Format: decision, reason, alternatives considered.
 ## D5 - three.js vendored in `vendor/` (Nov 2026)
 - **Why:** works offline and does not depend on a CDN. Pinned to three.js 0.160.0 (single-file build).
 
-## D6 - Units: millimetres in the UI, metres and degrees in the model (Nov 2026)
-- **Why:** architects think in millimetres; IFC and three.js use metres. Conversion is centralised in `src/core/units.js`.
+## D6 - Units: metres and centimetres in the UI, metres and degrees in the model (Nov 2026)
+- **Why:** overall lengths read naturally in metres and sections and spacings in centimetres; IFC and three.js use metres. Each parameter declares its unit (m, cm, mm or deg) and the engine converts with `valuesInMetres` (`src/core/templates/params.js`, `src/core/units.js`). Revised from the first version, which used millimetres everywhere.
+- **Consequence:** old shared links that carry millimetre values are out of range and show a validation error.
 
 ## D7 - Project rules enforced by script (Nov 2026)
 - 1000-line maximum, kebab-case file names, English-only text, checked by `npm run check` and CI.

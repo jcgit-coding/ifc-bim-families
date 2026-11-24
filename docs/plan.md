@@ -12,9 +12,9 @@ src/
     ifc/           STEP helpers, typed measures, profile writers, IFC writer
     geometry/      vector helpers for part orientation
     templates/     parameter handling, template contract/registry, evaluation
-    units.js       millimetre/metre/degree conversions
-  i18n/            translation layer (t(), language switch) and the Spanish dictionary
+    units.js       metre/centimetre/millimetre/degree conversions
     url-state.js   shareable URL state
+  i18n/            translation layer (t(), language switch) and the Spanish dictionary
   templates/       one file per family + catalogue index + "coming soon" list
   viewer/          three.js preview, part geometry, dimensions overlay
   ui/              DOM rendering (home, breadcrumbs, parameter form, status panel, theme)

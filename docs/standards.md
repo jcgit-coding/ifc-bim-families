@@ -37,9 +37,9 @@ These rules are checked automatically by `npm run check` (and in CI).
 | Custom property sets | `Custom_<Family>_<Topic>` (`Pset_` is reserved by buildingSMART) | `Custom_BioclimaticPergola_Parameters` |
 
 ## Units
-- Template parameters are entered in **millimetres** and **degrees**.
+- Template parameters are entered in **metres** (overall lengths such as width, depth, height), **centimetres** (cross sections, thicknesses, gaps) and **degrees**. Each parameter declares its `unit`.
 - Everything after `compute()` (parts, IFC, viewer) is in **metres** and **degrees**.
-- Convert with `src/core/units.js`; never inline `/ 1000`.
+- Convert with `valuesInMetres` (`src/core/templates/params.js`) or `toMetres` (`src/core/units.js`); never inline `/ 100` or `/ 1000`.
 
 ## Architecture
 - `src/core`: generic engine (IFC writer, parameter handling, registry, URL state). No family-specific code.
